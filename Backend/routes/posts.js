@@ -1,15 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
+const { getAllPosts } = require("../controllers/posts");
 
-
-
-const { getAllPosts } = require('../controllers/posts');
-
-
-
-router.route('/').get(getAllPosts);
-
-
+router.route("/").get(getAllPosts);
 
 module.exports = router;
