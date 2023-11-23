@@ -1,21 +1,101 @@
 import styled from "styled-components";
 import GlobalStyles from "./../GlobalStyles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/authContext";
 
 const Login = () => {
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  const { login } = useContext(AuthContext);
+
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const validateInputs = () => {
+    let isValid = true;
+    const newErrors = { email: "", password: "" };
+
+    if (!inputs.email.trim()) {
+      newErrors.email = "email is required";
+      isValid = false;
+    }
+
+    if (!inputs.password.trim()) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+
+    return isValid;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (validateInputs()) {
+      try {
+        await login(inputs);
+        navigate("/");
+      } catch (err) {
+        console.log(err);
+
+        if (err.response && err.response.status === 401) {
+          setErrors((prev) => ({ ...prev, password: "Incorrect password" }));
+        }
+
+        if (err.response && err.response.status === 404) {
+          setErrors((prev) => ({ ...prev, email: "User not found" }));
+        }
+      }
+    }
+  };
+
   return (
     <>
       <GlobalStyles isLoginPage />
       <Container>
         <Title>Login</Title>
         <Form>
-          <Input type="text" placeholder="Username" />
-          <Input type="password" placeholder="Password" />
-          <Button type="submit">Login</Button>
+          <Input
+            type="email"
+            placeholder="email"
+            name="email"
+            onChange={handleChange}
+            value={inputs.email}
+            autoComplete="email"
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            name="password"
+            onChange={handleChange}
+            value={inputs.password}
+            autoComplete="current-password"
+          />
+          <Button onClick={handleSubmit} type="submit">
+            Login
+          </Button>
           <Span>
             Don't have an account?
             <Styledlink to="/register">Register</Styledlink>
           </Span>
+          <ErrorMessage>{errors.email}</ErrorMessage>
+          <ErrorMessage>{errors.password}</ErrorMessage>
         </Form>
       </Container>
     </>
@@ -23,6 +103,13 @@ const Login = () => {
 };
 
 export default Login;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+`;
 
 const Container = styled.div`
   display: flex;
@@ -40,6 +127,30 @@ const Container = styled.div`
   );
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 1024px) {
+    width: 70vw;
+    height: 40vh;
+    margin: 30px auto;
+  }
+
+  @media (max-width: 768px) {
+    width: 60vw;
+    height: 40vh;
+    margin: 20px auto;
+  }
+
+  @media (max-width: 480px) {
+    width: 80vw;
+    height: 40vh;
+    margin: 10px auto;
+  }
+
+  @media (max-width: 375px) {
+    width: 90vw;
+    height: 50vh;
+    margin: 5px auto;
+  }
 `;
 
 const Title = styled.h1`
