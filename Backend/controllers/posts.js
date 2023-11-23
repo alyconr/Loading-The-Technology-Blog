@@ -1,29 +1,184 @@
-
-const { StatusCodes } = require('http-status-codes');
-
+require("dotenv").config();
+const { StatusCodes } = require("http-status-codes");
+const jwt = require("jsonwebtoken");
 
 const dbUrl = process.env.MYSQL_URI;
 const caPath = process.env.CA_PATH;
-const pool = require('../db/connect')(dbUrl, caPath);
-
-
+const pool = require("../db/connect")(dbUrl, caPath);
 
 const getAllPosts = async (req, res) => {
-    const sql = 'SELECT * FROM posts';
+  const sql = req.query.category
+    ? "SELECT * FROM posts WHERE category = ?"
+    : "SELECT * FROM posts";
 
-    pool.query(sql, (queryError, results) => {
-        if(queryError) {
-            console.error('Database query error:', queryError);
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Database query error' });
+  const values = req.query.category ? [req.query.category] : [];
 
-        } else {
-            res.status(StatusCodes.OK).json({ posts: results });
-        }
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json({ posts: results });
+    }
+  });
+};
 
-    })
+const getSinglePost = async (req, res) => {
+  const sql =
+    "SELECT posts.id, `username`, `title`, `description`, posts.image, users.image AS userImage, `date`, `category` FROM users JOIN posts ON users.id = posts.uid WHERE posts.id = ?";
 
-}
+  const values = [req.params.id];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json({ post: results[0] });
+    }
+  });
+};
+
+const deletePost = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    // check if token exists
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Unauthorized no token" });
+  }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!decoded) {
+    // check if token is valid
+    return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
+  }
+
+  const sql = "DELETE FROM posts WHERE `id` = ? AND `uid` = ?";
+
+  const values = [req.params.id, decoded.id];
+  ("");
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json({ message: "Post deleted successfully" });
+    }
+  });
+};
+
+const validatePost = async (req) => {
+  const { title, description, image, date } = req.body;
+  return !title || !description || !image || !date;
+};
+
+const createPost = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    // check if token exists
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Unauthorized no token" });
+  }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  console.log(decoded);
+
+  if (!decoded) {
+    // check if token is valid
+    return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
+  }
+
+  const sql =
+    "INSERT INTO posts(`title`, `description`, `image`, `date`,`uid`, `Category` ) VALUES (?, ?, ?, ?, ?, ?)";
+
+  const values = [
+    req.body.title,
+    req.body.description,
+    req.body.image,
+    req.body.date,
+    decoded.id,
+    req.body.category,
+  ];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res
+        .status(StatusCodes.CREATED)
+        .json({ post: results, message: "Post created successfully" });
+    }
+  });
+};
+
+const updatePost = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    // check if token exists
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Unauthorized no token" });
+  }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!decoded) {
+    // check if token is valid
+    return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
+  }
+
+  if (validatePost(req)) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: "All fields are required" });
+  }
+
+  const sql =
+    "UPDATE posts SET `title` = ?, `description` = ?, `image` = ?,  `category` = ? WHERE `id` = ? AND `uid` = ?";
+
+  const values = [
+    req.body.title,
+    req.body.description,
+    req.body.image,
+    req.body.date,
+    req.body.category,
+    req.params.id,
+    decoded.id,
+  ];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json({ post: results });
+    }
+  });
+};
 
 module.exports = {
-    getAllPosts
-}
+  getAllPosts,
+  getSinglePost,
+  createPost,
+  deletePost,
+  updatePost,
+};
