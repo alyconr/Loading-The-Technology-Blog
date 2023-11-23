@@ -8,9 +8,12 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
 }
 
-body{
+body {
     font-family: 'Poppins', sans-serif;
-    background: ${({ isLoginPage}) => isLoginPage ? 'linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(70,251,252,1) 100%)' : '#fff'};
+    background: ${({ isLoginPage }) =>
+      isLoginPage
+        ? "linear-gradient(90deg, rgba(63,94,251,1) 0%, rgba(70,251,252,1) 100%)"
+        : "#fff"};
     color: #333;
 
 }
