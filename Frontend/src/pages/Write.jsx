@@ -2,20 +2,92 @@ import styled from "styled-components";
 import { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import moment from "moment";
 const Write = () => {
-  const [title, setTitle] = useState("");
+  const location = useLocation();
+  const [title, setTitle] = useState(location?.state?.title || "");
+  const [desc, setDesc] = useState(location?.state?.description || "");
+  const [file, setFile] = useState(null);
+  const [cat, setCat] = useState(location?.state?.category || "");
 
-  console.log(title);
+  const navigate = useNavigate();
+
+  const upload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await axios.post(
+        "http://localhost:9000/api/v1/upload",
+        formData
+      );
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  console.log("Request Data:", {
+    title,
+    description: desc,
+    category: cat,
+    image: file,
+  });
+
+  // Make the axios request
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+
+    const imgUrl = await upload();
+
+    try {
+      location.state
+        ? await axios.put(
+            `http://localhost:9000/api/v1/posts/${location.state.id}`,
+            {
+              title,
+              description: desc,
+              category: cat,
+              image: file ? imgUrl : "",
+            },
+            {
+              withCredentials: true,
+            }
+          )
+        : await axios.post(
+            "http://localhost:9000/api/v1/posts",
+            {
+              title,
+              description: desc,
+              category: cat,
+              image: file.name ? imgUrl : "",
+              date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+            },
+            {
+              withCredentials: true,
+            }
+          );
+      navigate("/");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Wrapper>
       <div className="Editor">
-        <input type="text" placeholder="Title" />
-        <ReactQuill
-          className="Box-editor"
-          theme="snow"
+        <input
+          type="text"
+          placeholder="Title"
           value={title}
-          onChange={setTitle}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <ReactQuill
+          className="editor"
+          theme="snow"
+          value={desc}
+          onChange={setDesc}
         />
       </div>
       <div className="Preview">
@@ -30,41 +102,89 @@ const Write = () => {
             <b>Visibility: </b>Public
           </span>
           <input
-            style = {{display : "none"}}
+            style={{ display: "none" }}
             type="file"
             name=""
             id="file"
-            
+            onChange={(e) => setFile(e.target.files[0])}
           />
-          <label className="input-file" htmlFor="file">Upload Image</label>
+          <label className="input-file" htmlFor="file">
+            Upload Image
+          </label>
           <div className="actions">
             <button>Save Draft</button>
-            <button>Update</button>
+            <button onClick={handleClick}>Publish</button>
           </div>
         </div>
         <div className="box-2">
           <h1>Category</h1>
           <Category>
-          <input type="radio" name="category" value="javascript" id="art" />
-          <label htmlFor="javascript"> Javascript </label>
+            <input
+              type="radio"
+              checked={cat === "Javascript"}
+              name="cat"
+              value="Javascript"
+              id="javascript"
+              onChange={(e) => setCat(e.target.value)}
+            />
+            <label htmlFor="javascript"> Javascript </label>
           </Category>
           <Category>
-          <input type="radio" name="category" value="javascript" id="art" />
-          <label htmlFor="javascript"> CSS </label>
+            <input
+              type="radio"
+              name="cat"
+              checked={cat === "CSS"}
+              value="CSS"
+              id="css"
+              onChange={(e) => setCat(e.target.value)}
+            />
+            <label htmlFor="css"> CSS </label>
           </Category>
           <Category>
-          <input type="radio" name="category" value="javascript" id="art" />
-          <label htmlFor="javascript"> React </label>
+            <input
+              type="radio"
+              name="cat"
+              checked={cat === "React"}
+              value="React"
+              id="react"
+              onChange={(e) => setCat(e.target.value)}
+            />
+            <label htmlFor="react"> React </label>
           </Category>
-          <Category> <input type="radio" name="category" value="javascript" id="art" />
-          <label htmlFor="javascript"> Node </label></Category>
-         <Category>
-         <input type="radio" name="category" value="javascript" id="art" />
-          <label htmlFor="javascript"> Python </label>
-         </Category>
-          <Category><input type="radio" name="category" value="javascript" id="art" />
-          <label htmlFor="javascript"> Docker </label></Category>
-          
+          <Category>
+            {" "}
+            <input
+              type="radio"
+              name="cat"
+              checked={cat === "Node"}
+              value="Node"
+              id="node"
+              onChange={(e) => setCat(e.target.value)}
+            />
+            <label htmlFor="node"> Node </label>
+          </Category>
+          <Category>
+            <input
+              type="radio"
+              name="cat"
+              checked={cat === "Python"}
+              value="Python"
+              id="python"
+              onChange={(e) => setCat(e.target.value)}
+            />
+            <label htmlFor="python"> Python </label>
+          </Category>
+          <Category>
+            <input
+              type="radio"
+              name="cat"
+              checked={cat === "Docker"}
+              value="Docker"
+              id="docker"
+              onChange={(e) => setCat(e.target.value)}
+            />
+            <label htmlFor="docker"> Docker </label>
+          </Category>
         </div>
       </div>
     </Wrapper>
@@ -78,12 +198,21 @@ const Wrapper = styled.div`
   gap: 2rem;
   margin: 1rem;
 
+  @media only screen and (max-width: 768px) {
+    flex-direction: column;
+    margin: 0 auto;
+  }
+
   .Editor {
     flex: 5;
     margin-left: 5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+
+    @media only screen and (max-width: 768px) {
+      margin-left: 0;
+    }
 
     .Box-editor {
       height: 400px;
@@ -138,9 +267,7 @@ const Wrapper = styled.div`
         font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease-in-out;
-        
       }
-    
     }
 
     .actions {
@@ -156,12 +283,8 @@ const Wrapper = styled.div`
         font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease-in-out;
-         
       }
-
     }
-
-
   }
 `;
 
@@ -179,4 +302,3 @@ const Category = styled.div`
     cursor: pointer;
   }
 `;
-
