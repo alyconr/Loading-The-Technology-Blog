@@ -1,61 +1,47 @@
 import styled from "styled-components";
 import { BsPostcardHeartFill } from "react-icons/bs";
+import { useState, useEffect } from "react";
+import axios from "axios";
+const MenuLeft = ({ category }) => {
+  const [posts, setPosts] = useState([]);
 
-const MenuLeft = () => {
-  const posts = [
-    {
-      id: 1,
-      title: "ReactJs",
-      description:
-        "ReactJs is a free and open-source front-end JavaScript library for building user interfaces based on components",
-      image:
-        "https://images.pexels.com/photos/1181325/pexels-photo-1181325.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await axios(
+          `http://localhost:9000/api/v1/posts/?category=${category}`
+        );
+        setPosts(res.data.posts);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    {
-      id: 2,
-      title: "NodeJs",
-      description:
-        "Node.js is an open-source, cross-platform, back-end JavaScript runtime environment that executes JavaScript code outside of a browser.",
-      image:
-        "https://images.pexels.com/photos/1261427/pexels-photo-1261427.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
+    fetchPosts();
+  }, [category]);
 
-    {
-      id: 3,
-      title: "Python",
-      description:
-        "Python is a high-level, general-purpose programming language. Its design philosophy emphasizes code readability with the use of significant indentation.",
-      image:
-        "https://images.pexels.com/photos/16018144/pexels-photo-16018144/free-photo-of-pessoa-programando-hacker.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2g",
-    },
-
-    {
-      id: 4,
-      title: "Docker",
-      description:
-        "Docker is a set of platform as a service (PaaS) products that use OS-level virtualization to deliver software containers.",
-      image:
-        "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-  ];
   return (
     <Wrapper>
-      <h1> 
+      <h1>
         Posts you may like
-        <BsPostcardHeartFill color={"#6A072D"} size={40} style={{ marginLeft: "1rem" }} />
+        <BsPostcardHeartFill
+          color={"#6A072D"}
+          size={40}
+          style={{ marginLeft: "1rem" }}
+        />
       </h1>
 
-      {posts.map((post) => (
-        <div className="post" key={post.id}>
-          <img className="postImg" src={post.image} alt="post" />
-          <div className="postInfo">
-            <h2 className="postTitle">{post.title}</h2>
-            <p>{post.description}</p>
-            <button>Read More</button>
+      {Array.isArray(posts) &&
+        posts.map((post) => (
+          <div className="post" key={post.id}>
+            <img className="postImg" src={post.image} alt="post" />
+            <div className="postInfo">
+              <h2 className="postTitle">{post.title}</h2>
+              <p>{post.description}</p>
+              <button>Read More</button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </Wrapper>
   );
 };
@@ -73,7 +59,6 @@ const Wrapper = styled.div`
     margin: 1rem 1.5rem;
     color: #1a0a06;
     text-align: justify;
-   
   }
 
   h2 {
