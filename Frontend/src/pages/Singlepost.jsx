@@ -44,10 +44,15 @@ const Singlepost = () => {
     }
   };
 
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent;
+  };
+
   return (
     <Wrapper>
       <Post>
-        <img className="postImg" src={post?.image} alt="" />
+        <img className="postImg" src={`../upload/${post.image}`} alt="" />
         <div className="user">
           {post.userImage && (
             <img className="userImg" src={post.userImage} alt="" />
@@ -74,7 +79,7 @@ const Singlepost = () => {
             )}
         </div>
         <h1>{post.title}</h1>
-        {post.description}
+        {getText(post.description)}
       </Post>
       <MenuSide>
         <MenuLeft category={post.category} />

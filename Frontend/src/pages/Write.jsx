@@ -84,10 +84,29 @@ const Write = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
         <ReactQuill
-          className="editor"
-          theme="snow"
+          className="Box-editor"
           value={desc}
           onChange={setDesc}
+          modules={{
+            toolbar: [
+              [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              ["bold", "italic", "underline", "strike", "blockquote"],
+              [
+                { list: "ordered" },
+                { list: "bullet" },
+              
+              ],
+              ["link", "image"],
+              ["clean"],
+              [{ color: [] }, ],
+              [{ align: [] }],
+              ["code-block"],
+            ],
+          }}
+          formats={[
+            "header", "bold", "italic", "underline", "strike", "blockquote", "list", "code-block", "link", "image", "color", "align",
+          ]}
+
         />
       </div>
       <div className="Preview">
@@ -215,7 +234,7 @@ const Wrapper = styled.div`
     }
 
     .Box-editor {
-      height: 400px;
+      height: 600px;
       width: 100%;
       border: 1px solid #ccc;
       border-radius: 5px;
