@@ -1,58 +1,42 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import axios from "axios";
+import { useState, useEffect } from "react";
 const Home = () => {
-  const posts = [
-    {
-      id: 1,
-      title: "ReactJs",
-      description:
-        "ReactJs is a free and open-source front-end JavaScript library for building user interfaces based on components",
-      image:
-        "https://images.pexels.com/photos/1181325/pexels-photo-1181325.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
+  const [posts, setPosts] = useState([]);
 
-    {
-      id: 2,
-      title: "NodeJs",
-      description:
-        "Node.js is an open-source, cross-platform, back-end JavaScript runtime environment that executes JavaScript code outside of a browser.",
-      image:
-        "https://images.pexels.com/photos/1261427/pexels-photo-1261427.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
+  const category = useLocation().search;
 
-    {
-      id: 3,
-      title: "Python",
-      description:
-        "Python is a high-level, general-purpose programming language. Its design philosophy emphasizes code readability with the use of significant indentation.",
-      image:
-        "https://images.pexels.com/photos/16018144/pexels-photo-16018144/free-photo-of-pessoa-programando-hacker.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2g",
-    },
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await axios.get(
+        `http://localhost:9000/api/v1/posts${category}`
+      );
+      setPosts(res.data.posts);
+    };
+    fetchPosts();
+  }, [category]);
 
-    {
-      id: 4,
-      title: "Docker",
-      description:
-        "Docker is a set of platform as a service (PaaS) products that use OS-level virtualization to deliver software containers.",
-      image:
-        "https://images.pexels.com/photos/1181671/pexels-photo-1181671.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-    },
-  ];
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent;
+  };
 
   return (
     <Wrapper>
-      {posts.map((post) => (
-        <Post key={post.id}>
-          <img src={post.image} alt={post.title} />
-          <div className="Content">
-            <PostLink to={`/singlepost/${post.id}`}>
-              <h2>{post.title}</h2>
-            </PostLink>
-            <p>{post.description}</p>
-            <Button>Read More</Button>
-          </div>
-        </Post>
-      ))}
+      {Array.isArray(posts) &&
+        posts.map((post) => (
+          <Post key={post.id}>
+            <img src={`../upload/${post.image}`} alt={post.title} />
+            <div className="Content">
+              <PostLink to={`/singlepost/${post.id}`}>
+                <h2>{post.title}</h2>
+              </PostLink>
+              <p>{getText(post.description)}</p>
+              <Button>Read More</Button>
+            </div>
+          </Post>
+        ))}
     </Wrapper>
   );
 };
@@ -75,6 +59,7 @@ const Post = styled.div`
   flex-direction: row;
   margin: 50px auto 0;
   gap: 50px;
+
   .Content {
     display: flex;
     flex-direction: column;
@@ -113,7 +98,6 @@ const Button = styled.button`
 
   &:hover {
     background-color: #070636;
-    
   }
 `;
 
