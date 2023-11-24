@@ -1,42 +1,43 @@
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
-import axios from "axios";
-import { useState, useEffect } from "react";
-const Home = () => {
-  const [posts, setPosts] = useState([]);
+import useFetch from "../utils/useFetch";
 
+const Home = () => {
   const category = useLocation().search;
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const res = await axios.get(
-        `http://localhost:9000/api/v1/posts${category}`
-      );
-      setPosts(res.data.posts);
-    };
-    fetchPosts();
-  }, [category]);
+  const {
+    data: posts,
+    loading,
+    error,
+  } = useFetch(`http://localhost:9000/api/v1/posts${category}`);
 
-  const getText = (html) => {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent;
-  };
+ 
 
   return (
     <Wrapper>
-      {Array.isArray(posts) &&
+      {error && <div>{error}</div>}
+      {loading ? (
+        <Loader>
+          <div className="loader">&#128238;</div>
+        </Loader>
+      ) : (
+        Array.isArray(posts) &&
         posts.map((post) => (
           <Post key={post.id}>
             <img src={`../upload/${post.image}`} alt={post.title} />
             <div className="Content">
               <PostLink to={`/singlepost/${post.id}`}>
-                <h2>{post.title}</h2>
+                <h1>{post.title}</h1>
               </PostLink>
-              <p>{getText(post.description)}</p>
-              <Button>Read More</Button>
+              <h3>{post.description}</h3>
+              <Link to={`/singlepost/${post.id}`}>
+                {" "}
+                <Button>Read More</Button>
+              </Link>
             </div>
           </Post>
-        ))}
+        ))
+      )}
     </Wrapper>
   );
 };
@@ -49,6 +50,41 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
+`;
+
+const Loader = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+
+  .loader {
+    width: fit-content;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 30px;
+    background: radial-gradient(circle closest-side, #000 94%, #0000)
+      right/calc(200% - 1em) 100%;
+    animation: l24 1s infinite alternate linear;
+  }
+
+  .loader::before {
+    content: "Loading Posts...";
+    line-height: 1em;
+    color: #0000;
+    background: inherit;
+    background-image: radial-gradient(circle closest-side, #fff 94%, #000);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  @keyframes l24 {
+    100% {
+      background-position: left;
+    }
+  }
 `;
 
 const Post = styled.div`
@@ -71,9 +107,18 @@ const Post = styled.div`
   img {
     width: 40%;
     height: 300px;
-    object-fit: cover;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  h3 {
+    font-size: 20px;
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 400;
+    color: #555;
+    text-align: justify;
+    text-justify: inter-word;
   }
 
   &:nth-child(even) {

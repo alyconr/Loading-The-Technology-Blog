@@ -8,6 +8,8 @@ import axios from "axios";
 import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
+import dompurify from "dompurify";
+import { toast } from "react-toastify";
 
 const Singlepost = () => {
   const [post, setPost] = useState({});
@@ -39,14 +41,25 @@ const Singlepost = () => {
         withCredentials: true,
       });
       navigate("/");
+      toast.info("Post deleted successfully", {
+        position: "bottom-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getText = (html) => {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent;
+  const createMarkup = (html) => {
+    return {
+      __html: dompurify.sanitize(html), // this will sanitize the html code to prevent XSS attacks
+    };
   };
 
   return (
@@ -79,7 +92,11 @@ const Singlepost = () => {
             )}
         </div>
         <h1>{post.title}</h1>
-        {getText(post.description)}
+        <h3>{post.description}</h3>
+        <div
+          className="paragraph"
+          dangerouslySetInnerHTML={createMarkup(post.content)}
+        />
       </Post>
       <MenuSide>
         <MenuLeft category={post.category} />
@@ -96,13 +113,12 @@ const Wrapper = styled.div`
 `;
 
 const Post = styled.div`
-  flex: 5;
+  flex: 10;
   margin: 0 30px;
 
   .postImg {
     width: 100%;
-    height: 300px;
-    object-fit: cover;
+    height: 400px;
     border-radius: 5px;
     margin: 30px 0;
   }
@@ -146,14 +162,13 @@ const Post = styled.div`
     font-size: 30px;
   }
 
-  p {
-    line-height: 25px;
-    font-size: 17px;
-    color: #333;
-    text-align: justify;
+  h3 {
+    margin: 20px 0;
+    font-size: 20px;
+    color: #555;
   }
 `;
 
 const MenuSide = styled.div`
-  flex: 3;
+  flex: 5;
 `;

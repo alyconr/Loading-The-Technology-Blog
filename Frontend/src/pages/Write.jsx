@@ -5,49 +5,54 @@ import "react-quill/dist/quill.snow.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
+import { toast } from "react-toastify";
 const Write = () => {
   const location = useLocation();
   const [title, setTitle] = useState(location?.state?.title || "");
   const [desc, setDesc] = useState(location?.state?.description || "");
+  const [cont, setCont] = useState(location?.state?.content || "");
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState(location?.state?.category || "");
 
   const navigate = useNavigate();
 
-  const upload = async () => {
+  const handleClick = async (e) => {
+    e.preventDefault();
+
+    if (!title || !desc || !cont || !cat || !file) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
     try {
+      toast.info("Uploading image...", {
+        position: "bottom-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
       const formData = new FormData();
       formData.append("file", file);
+
       const res = await axios.post(
         "http://localhost:9000/api/v1/upload",
         formData
       );
-      return res.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  console.log("Request Data:", {
-    title,
-    description: desc,
-    category: cat,
-    image: file,
-  });
 
-  // Make the axios request
+      const imgUrl = res.data;
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-
-    const imgUrl = await upload();
-
-    try {
       location.state
         ? await axios.put(
             `http://localhost:9000/api/v1/posts/${location.state.id}`,
             {
               title,
               description: desc,
+              content: cont,
               category: cat,
               image: file ? imgUrl : "",
             },
@@ -60,17 +65,28 @@ const Write = () => {
             {
               title,
               description: desc,
+              content: cont,
               category: cat,
               image: file.name ? imgUrl : "",
               date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
             },
-            {
-              withCredentials: true,
-            }
+            { withCredentials: true }
           );
+
+      toast.success("Post published successfully",{
+        position: "bottom-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
       navigate("/");
     } catch (err) {
       console.log(err);
+      toast.error("Error uploading image or publishing post");
     }
   };
 
@@ -83,30 +99,44 @@ const Write = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
+        <textarea
+          type="text"
+          placeholder="Short Description"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+        />
+
         <ReactQuill
           className="Box-editor"
-          value={desc}
-          onChange={setDesc}
+          value={cont}
+          onChange={setCont}
+          placeholder="Write your blog here..."
           modules={{
             toolbar: [
               [{ header: [1, 2, 3, 4, 5, 6, false] }],
               ["bold", "italic", "underline", "strike", "blockquote"],
-              [
-                { list: "ordered" },
-                { list: "bullet" },
-              
-              ],
+              [{ list: "ordered" }, { list: "bullet" }],
               ["link", "image"],
               ["clean"],
-              [{ color: [] }, ],
+              [{ color: [] }],
               [{ align: [] }],
               ["code-block"],
             ],
           }}
           formats={[
-            "header", "bold", "italic", "underline", "strike", "blockquote", "list", "code-block", "link", "image", "color", "align",
+            "header",
+            "bold",
+            "italic",
+            "underline",
+            "strike",
+            "blockquote",
+            "list",
+            "code-block",
+            "link",
+            "image",
+            "color",
+            "align",
           ]}
-
         />
       </div>
       <div className="Preview">
@@ -130,10 +160,15 @@ const Write = () => {
           <label className="input-file" htmlFor="file">
             Upload Image
           </label>
-          <div className="actions">
-            <button>Save Draft</button>
-            <button onClick={handleClick}>Publish</button>
-          </div>
+          <h5>{file ? `Uploaded: ${file.name}` : ""}</h5>
+          {file ? (
+            <div className="actions">
+              <button>Save Draft</button>
+              <button onClick={handleClick}>Publish</button>
+            </div>
+          ) : (
+            <p> Please before Publish your post select an image</p>
+          )}
         </div>
         <div className="box-2">
           <h1>Category</h1>
@@ -249,6 +284,17 @@ const Wrapper = styled.div`
       background-color: transparent;
       border: none;
       border-bottom: 1px solid #ccc;
+      margin-top: 1rem;
+      outline: none;
+    }
+
+    textarea {
+      padding: 0.5rem;
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      resize: none;
+      outline: none;
     }
   }
 

@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import GlobalStyles from "./../GlobalStyles";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [inputs, setInputs] = useState({
@@ -51,8 +51,20 @@ const Login = () => {
       try {
         await login(inputs);
         navigate("/");
+        toast.success("Login successful",{
+          position: "bottom-center",
+          autoClose: 2500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       } catch (err) {
         console.log(err);
+       
+
 
         if (err.response && err.response.status === 401) {
           setErrors((prev) => ({ ...prev, password: "Incorrect password" }));
