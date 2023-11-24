@@ -2,7 +2,10 @@ import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
-
+import Dropdown from "react-bootstrap/Dropdown";
+import { CgProfile } from "react-icons/cg";
+import { RiLogoutCircleRLine } from "react-icons/ri";
+import { IoSettingsOutline } from "react-icons/io5";
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
 
@@ -19,10 +22,12 @@ const Navbar = () => {
   return (
     <NavBar>
       <div className="container">
-      <Link className="link" to="/"><Logo>
-          <img src="logo.png" alt="logo" />
-        </Logo></Link>
-        
+        <Link className="link" to="/">
+          <Logo>
+            <img src="logo.png" alt="logo" />
+          </Logo>
+        </Link>
+
         <Menu>
           <MenuItem to="/">Home</MenuItem>
           <MenuItem to="/?category=Javascript">Javascript</MenuItem>
@@ -33,19 +38,35 @@ const Navbar = () => {
           <MenuItem to="/?category=Docker">Docker</MenuItem>
           {currentUser ? (
             <>
-              <Write>{currentUser?.user.username}</Write>
-              <Write onClick={logout}>Logout</Write>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="link-profile"
+                  variant="success"
+                  id="dropdown-basic"
+                >
+                  {currentUser?.user.username}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                <Profile  to={"/profile"}><Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
+                    <CgProfile size={20} /> Profile
+                  </Dropdown.Item></Profile>
+                  <Dropdown.Item onClick={logout}>
+                    <RiLogoutCircleRLine /> Logout
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">
+                    <IoSettingsOutline /> Settings
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </>
           ) : (
-         
-              <Login className="link" to="/login">
-                Login
-              </Login>
-            
+            <Login  to="/login">
+              Login
+            </Login>
           )}
-         
-            <Write to="/write">Write</Write>
-          
+
+          <Write to="/write">Write <img className="write-img" src="../write.png" alt="" /></Write>
         </Menu>
         <MobileMenuIcon onClick={toggleMobileMenu}>&#9776;</MobileMenuIcon>
         {isMobileMenuOpen && (
@@ -73,20 +94,38 @@ const Navbar = () => {
             </MenuItem>
             {currentUser ? (
               <>
-                <Span>{currentUser?.user.username}</Span>
-                <Span onClick={logout}>Logout</Span>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="link-profile"
+                  variant="success"
+                  id="dropdown-basic"
+                >
+                  {currentUser?.user.username}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                <Link to={"/profile"}><Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
+                    <CgProfile size={20} /> Profile
+                  </Dropdown.Item></Link>
+                  
+                  <Dropdown.Item onClick={logout}>
+                    <RiLogoutCircleRLine /> Logout
+                  </Dropdown.Item>
+                  <Dropdown.Item href="#/action-3">
+                    <IoSettingsOutline /> Settings
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
               </>
             ) : (
               <Span>
-                <Link className="link" to="/login">
+                <Link  to="/login">
                   Login
                 </Link>
               </Span>
             )}
             <Span>
-              <Write to="/write" onClick={closeMobileMenu}>
-                Write
-              </Write>
+            <Write to="/write" onClick={closeMobileMenu}>Write <img className="write-img" src="../write.png" alt="" /></Write>
             </Span>
           </MobileMenu>
         )}
@@ -111,6 +150,10 @@ const NavBar = styled.div`
     justify-content: space-between;
     height: 100%;
   }
+  .link-profile {
+    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+  }
+
 `;
 
 const Logo = styled.div`
@@ -161,6 +204,7 @@ const MobileMenu = styled.div`
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
+    align-items: center;
     position: absolute;
     top: 70px;
     left: 0;
@@ -220,7 +264,7 @@ const MenuItem = styled(Link)`
         transition: all 0.3s ease;
         text-decoration: underline;
         cursor: pointer;
-        color: #12c4c1;
+      
       }
     }
   }
@@ -233,7 +277,6 @@ const Span = styled.div`
   color: white;
   font-weight: 500;
   margin: 10px auto;
-  background-color: #1dbf73;
   padding: 10px;
   border-radius: 5px;
   transition: all 0.3s ease;
@@ -257,20 +300,37 @@ const Write = styled(Link)`
   cursor: pointer;
   text-decoration: none;
   color: white;
-  background-color: #1dbf73;
+  background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(165,108,108,1) 100%);
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 50px;
   transition: all 0.3s ease;
-  width: 15%;
+  width: 10%;
   text-align: center;
+
+  .write-img {
+    width: 25px;
+    height: 25px;
+  }
 `;
 
-const Login = styled(Link)`
-font-size: 14px;
+const Profile = styled(Link)`
   cursor: pointer;
   text-decoration: none;
-  color: white;
-  background-color: #1dbf73;
+  color: white;   
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  width: 10%; 
+  `;
+
+
+
+const Login = styled(Link)`
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bolder;
+  color: black;
+  background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(225,253,29,1) 50%, rgba(252,176,69,1) 100%);
   padding: 10px;
   border-radius: 5px;
   transition: all 0.3s ease;

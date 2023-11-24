@@ -19,8 +19,8 @@ function Hero() {
           alt="First slide"
         />
         <Carousel.Caption >
-          <h3 className="fw-bolder fs-1 text-white  ">First slide label</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+          <h3 className="fw-bolder fs-1 text-white  ">Loading, The Technology Blog</h3>
+          <p>Where you can express your ideas </p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
@@ -30,8 +30,8 @@ function Hero() {
           alt="First slide"
         />
         <Carousel.Caption>
-          <h3 className="fw-bolder fs-1 text-white  ">Second slide label</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          <h3 className="fw-bolder fs-1 text-white  ">Technology Stacks</h3>
+          <p>Web development, Cloud, Devops, Networking, Security and more</p>
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
@@ -41,9 +41,9 @@ function Hero() {
           alt="First slide"
         />
         <Carousel.Caption>
-          <h3 className="fw-bolder fs-1 text-white  ">Third slide label</h3>
+          <h3 className="fw-bolder fs-1 text-white  ">Social Networking</h3>
           <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur.
+           Share your Knowledge and learn on a daily basis.
           </p>
         </Carousel.Caption>
       </Carousel.Item>

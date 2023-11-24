@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { BsPostcardHeartFill } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";	
 const MenuLeft = ({ category }) => {
   const [posts, setPosts] = useState([]);
 
@@ -43,7 +44,8 @@ const MenuLeft = ({ category }) => {
             <div className="postInfo">
               <h2 className="postTitle">{post.title}</h2>
               <p>{getText(post.description)}</p>
-              <button>Read More</button>
+              <Link to={`/singlepost/${post.id}`}><button>Read More</button></Link> 
+              
             </div>
           </div>
         ))}
@@ -81,7 +83,6 @@ const Wrapper = styled.div`
   .postImg {
     width: 100%;
     height: 300px;
-    object-fit: cover;
     border-radius: 10px;
   }
 
