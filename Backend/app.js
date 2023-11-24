@@ -12,7 +12,6 @@ app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(cookieParser());
 
 // multer
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "../Frontend/public/upload");
