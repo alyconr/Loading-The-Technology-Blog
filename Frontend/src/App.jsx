@@ -1,4 +1,11 @@
-import { createBrowserRouter, RouterProvider, Outlet, useLocation   } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -9,17 +16,19 @@ import Footer from "./components/Footer";
 import styled from "styled-components";
 import GlobalStyles from "./GlobalStyles";
 import Hero from "./components/Hero";
+import Profile from "./pages/Profile";
 
 const Layout = () => {
-
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const category = useLocation().search;
 
   return (
     <>
+      <ToastContainer />
       <GlobalStyles />
       <Navbar />
-      { isHome && <Hero />}
+      {isHome && !category && <Hero />}
       <Outlet />
       <Footer />
     </>
@@ -43,6 +52,10 @@ const Router = createBrowserRouter([
         path: "/singlepost/:id",
         element: <Singlepost />,
       },
+      {
+        path: "/profile",
+        element: <Profile />,
+      }
     ],
   },
   {
