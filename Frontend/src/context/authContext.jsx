@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
@@ -11,30 +12,50 @@ export const AuthContextProvider = ({ children }) => {
   const login = async (inputs) => {
     const res = await axios.post(
       "http://localhost:9000/api/v1/auth/login",
-      inputs, {
+      inputs,
+      {
         withCredentials: true,
-        credentials: 'include',
+        credentials: "include",
       }
     );
-/*
-    const token = res.data.user.token;
+    /*  const token = res.data.user.token;
 
     document.cookie = `token=${token}`;*/
 
-    setcurrentUser(res.data); 
+    setcurrentUser(res.data);
   };
 
   const logout = async () => {
-    await axios.post("http://localhost:9000/api/v1/auth/logout",  {}, {
-      withCredentials: true,
+
+    try {
+    await axios.post(
+      "http://localhost:9000/api/v1/auth/logout",
+      {},
+      {
+        withCredentials: true,
+      }
       
-    });
+    );
 
     //delete cookie
-/*
+    /*
     document.cookie = "token=; max-age=0";*/
 
     setcurrentUser(null);
+    toast.warning("Logout successfully", {
+      position: "bottom-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      
+    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
