@@ -27,7 +27,7 @@ const getAllPosts = async (req, res) => {
 
 const getSinglePost = async (req, res) => {
   const sql =
-    "SELECT posts.id, `username`, `title`, `description`, posts.image, users.image AS userImage, `date`, `category` FROM users JOIN posts ON users.id = posts.uid WHERE posts.id = ?";
+    "SELECT posts.id, `username`, `title`, `description`,  posts.image, users.image AS userImage, `content`, `date`, `category` FROM users JOIN posts ON users.id = posts.uid WHERE posts.id = ?";
 
   const values = [req.params.id];
 
@@ -77,10 +77,6 @@ const deletePost = async (req, res) => {
   });
 };
 
-const validatePost = async (req) => {
-  const { title, description, image, date } = req.body;
-  return !title || !description || !image || !date;
-};
 
 const createPost = async (req, res) => {
   const token = req.cookies.token;
@@ -102,11 +98,12 @@ const createPost = async (req, res) => {
   }
 
   const sql =
-    "INSERT INTO posts(`title`, `description`, `image`, `date`,`uid`, `Category` ) VALUES (?, ?, ?, ?, ?, ?)";
+    "INSERT INTO posts(`title`, `description`, `Content`,	 `image`, `date`,`uid`, `Category` ) VALUES (?, ?, ?, ?, ?, ?)";
 
   const values = [
     req.body.title,
     req.body.description,
+    req.body.content,
     req.body.image,
     req.body.date,
     decoded.id,
@@ -144,20 +141,15 @@ const updatePost = async (req, res) => {
     return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
   }
 
-  if (validatePost(req)) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ error: "All fields are required" });
-  }
 
   const sql =
-    "UPDATE posts SET `title` = ?, `description` = ?, `image` = ?,  `category` = ? WHERE `id` = ? AND `uid` = ?";
+    "UPDATE posts SET `title` = ?, `description` = ?, `Content` = ?, `image` = ?,  `Category` = ? WHERE `id` = ? AND `uid` = ?";
 
   const values = [
     req.body.title,
     req.body.description,
+    req.body.content,
     req.body.image,
-    req.body.date,
     req.body.category,
     req.params.id,
     decoded.id,
@@ -170,7 +162,7 @@ const updatePost = async (req, res) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Database query error" });
     } else {
-      res.status(StatusCodes.OK).json({ post: results });
+      res.status(StatusCodes.OK).json({ post: results, message: "Post updated successfully" });
     }
   });
 };
