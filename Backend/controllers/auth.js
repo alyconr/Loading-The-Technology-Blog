@@ -6,11 +6,11 @@ const pool = require("../db/connect")(dbUrl, caPath);
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const register = async (req, res) => {
-  const sql = "SELECT * FROM users WHERE email = ?  or username = ? ";
+  const sql = "SELECT * FROM users WHERE  fullname=? or username = ? or email = ?  ";
 
   pool.query(
     sql,
-    [req.body.email, req.body.username],
+    [req.body.fullname, req.body.username, req.body.email, ],
     (queryError, results) => {
       if (queryError) {
         console.error("Database query error:", queryError);
@@ -27,19 +27,33 @@ const register = async (req, res) => {
         }
 
         if (results[0].username === req.body.username) {
-          res
+          return res
             .status(StatusCodes.BAD_REQUEST)
             .json({ error: "Username already exists" });
         }
+
       }
+    
+      // validate password at least 8 characters long and contains at least one number and one special character
+
+      const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+      if (!passwordRegex.test(req.body.password)) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: "Password must be at least 8 characters long and contain at least one number and one special character" });
+      }
+
+
+
 
       const salt = bcrypt.genSaltSync(10);
       const hash = bcrypt.hashSync(req.body.password, salt);
 
-      const sql = "INSERT INTO users (username, email, password) VALUES(?,?,?)";
+      const sql = "INSERT INTO users (fullname, username, email, password) VALUES(?,?,?,?)";
       pool.query(
         sql,
-        [req.body.username, req.body.email, hash],
+        [req.body.fullname, req.body.username, req.body.email, hash],
         (queryError, results) => {
           if (queryError) {
             console.error("Database query error:", queryError);
@@ -52,6 +66,7 @@ const register = async (req, res) => {
             message: "User created successfully",
             user: {
               id: results.insertId,
+              fullname: req.body.fullname,
               username: req.body.username,
               email: req.body.email,
             },
@@ -98,6 +113,7 @@ const login = async (req, res) => {
       {
         id: user.id,
         username: user.username,
+        fullname: user.fullname,
         email: user.email,
       },
       process.env.JWT_SECRET,
@@ -118,6 +134,7 @@ const login = async (req, res) => {
         user: {
           id: user.id,
           username: user.username,
+          fullname: user.fullname,
           email: user.email,
           token,
         },
