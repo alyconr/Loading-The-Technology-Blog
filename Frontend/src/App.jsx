@@ -17,6 +17,7 @@ import styled from "styled-components";
 import GlobalStyles from "./GlobalStyles";
 import Hero from "./components/Hero";
 import Profile from "./pages/Profile";
+import Userposts from "./pages/Userposts";
 
 const Layout = () => {
   const location = useLocation();
@@ -53,9 +54,13 @@ const Router = createBrowserRouter([
         element: <Singlepost />,
       },
       {
-        path: "/profile",
+        path: "/profile/:username",
         element: <Profile />,
-      }
+      },
+      {
+        path: "/profile/:username/posts",
+        element: <Userposts />,
+      },
     ],
   },
   {
