@@ -3,6 +3,7 @@ import GlobalStyles from "./../GlobalStyles";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { Modal, Button } from "react-bootstrap";
 
 const Register = () => {
   const [inputs, setInputs] = useState({
@@ -18,7 +19,7 @@ const Register = () => {
     email: "",
     password: "",
   });
-
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
@@ -97,10 +98,16 @@ const Register = () => {
               password:
                 "Password must be at least 8 characters long and contain at least one number and one special character",
             }));
+
+            setShowErrorModal(true);
           }
         }
       }
     }
+  };
+
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false);
   };
 
   return (
@@ -150,16 +157,26 @@ const Register = () => {
             required
             autoComplete="current-password"
           />
-          {errors.password && <ErrorPassword>{errors.password}</ErrorPassword>}
 
-          <Button onClick={handleSubmit} type="submit">
+          <BUTTON onClick={handleSubmit} type="submit">
             Register
-          </Button>
+          </BUTTON>
           <Span>
             Do you already have an account?
             <Styledlink to="/Login">Login</Styledlink>
           </Span>
         </Form>
+        <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Error Password</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{errors.password}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseErrorModal}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </>
   );
@@ -271,7 +288,7 @@ const Input = styled.input`
   }
 `;
 
-const Button = styled.button`
+const BUTTON = styled.button`
   width: 300px;
   height: 40px;
   margin: 10px;
