@@ -48,7 +48,7 @@ const Navbar = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                <Profile  to={"/profile"}><Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
+                <Profile  to={`/profile/${currentUser?.user.username}`}><Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
                     <CgProfile size={20} /> Profile
                   </Dropdown.Item></Profile>
                   <Dropdown.Item onClick={logout}>
@@ -59,6 +59,7 @@ const Navbar = () => {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
+              <Write to="/write">Write <img className="write-img" src="../write.png" alt="" /></Write>
             </>
           ) : (
             <Login  to="/login">
@@ -66,7 +67,7 @@ const Navbar = () => {
             </Login>
           )}
 
-          <Write to="/write">Write <img className="write-img" src="../write.png" alt="" /></Write>
+          
         </Menu>
         <MobileMenuIcon onClick={toggleMobileMenu}>&#9776;</MobileMenuIcon>
         {isMobileMenuOpen && (
@@ -104,9 +105,9 @@ const Navbar = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                <Link to={"/profile"}><Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
+                <Profile to={`/profile/${currentUser?.user.username}`}><Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
                     <CgProfile size={20} /> Profile
-                  </Dropdown.Item></Link>
+                  </Dropdown.Item></Profile>
                   
                   <Dropdown.Item onClick={logout}>
                     <RiLogoutCircleRLine /> Logout
@@ -116,6 +117,9 @@ const Navbar = () => {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
+              <Span>
+            <Write to="/write" onClick={closeMobileMenu}>Write <img className="write-img" src="../write.png" alt="" /></Write>
+            </Span>
               </>
             ) : (
               <Span>
@@ -124,9 +128,7 @@ const Navbar = () => {
                 </Link>
               </Span>
             )}
-            <Span>
-            <Write to="/write" onClick={closeMobileMenu}>Write <img className="write-img" src="../write.png" alt="" /></Write>
-            </Span>
+           
           </MobileMenu>
         )}
       </div>
@@ -189,7 +191,13 @@ const MobileMenuIcon = styled.div`
   color: white;
   display: none; /* Hide the mobile menu icon on larger screens */
 
+
+
   @media (max-width: 768px) {
+    display: block; /* Show the mobile menu icon on small screens */
+  }
+
+  @media (max-width: 820px) {
     display: block; /* Show the mobile menu icon on small screens */
   }
 
@@ -200,6 +208,8 @@ const MobileMenuIcon = styled.div`
 
 const MobileMenu = styled.div`
   display: none; /* Hide the mobile menu on larger screens */
+
+
 
   @media (max-width: 768px) {
     display: flex;
@@ -280,7 +290,7 @@ const Span = styled.div`
   padding: 10px;
   border-radius: 5px;
   transition: all 0.3s ease;
-  width: 25%;
+  width: 30%;
   text-align: center;
 
   &:hover {
