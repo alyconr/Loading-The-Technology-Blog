@@ -8,6 +8,8 @@ import axios from "axios";
 import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
+import useFetch from "../utils/useFetch";
+
 import dompurify from "dompurify";
 import { toast } from "react-toastify";
 
@@ -15,6 +17,8 @@ const Singlepost = () => {
   const [post, setPost] = useState({});
   const location = useLocation();
   const { currentUser } = useContext(AuthContext);
+
+
 
   const navigate = useNavigate();
 
@@ -71,7 +75,8 @@ const Singlepost = () => {
             <img className="userImg" src={post.userImage} alt="" />
           )}
           <div className="info">
-            <span>{post.username}</span>
+          <PostLink to={`/profile/${post.username}`}> <span>{post.fullname}</span></PostLink>
+           
             <p>Posted {moment(post.createdAt).fromNow()}</p>
           </div>
           {currentUser &&
@@ -169,6 +174,13 @@ const Post = styled.div`
   }
 `;
 
+const PostLink = styled(Link)`
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+`;
 const MenuSide = styled.div`
   flex: 5;
 `;

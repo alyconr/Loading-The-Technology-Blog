@@ -51,7 +51,7 @@ const Login = () => {
       try {
         await login(inputs);
         navigate("/");
-        toast.success("Login successful",{
+        toast.success("Login successful", {
           position: "bottom-center",
           autoClose: 2500,
           hideProgressBar: false,
@@ -63,8 +63,6 @@ const Login = () => {
         });
       } catch (err) {
         console.log(err);
-       
-
 
         if (err.response && err.response.status === 401) {
           setErrors((prev) => ({ ...prev, password: "Incorrect password" }));

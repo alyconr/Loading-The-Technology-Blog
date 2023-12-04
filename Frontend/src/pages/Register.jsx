@@ -6,12 +6,14 @@ import axios from "axios";
 
 const Register = () => {
   const [inputs, setInputs] = useState({
+    fullname: "",
     username: "",
     email: "",
     password: "",
   });
 
   const [errors, setErrors] = useState({
+    fullname: "",
     username: "",
     email: "",
     password: "",
@@ -24,7 +26,12 @@ const Register = () => {
 
   const validateInputs = () => {
     let isValid = true;
-    const newErrors = { username: "", email: "", password: "" };
+    const newErrors = { fullname: "", username: "", email: "", password: "" };
+
+    if (!inputs.fullname.trim()) {
+      newErrors.fullname = "Full Name is required";
+      isValid = false;
+    }
 
     if (!inputs.username.trim()) {
       newErrors.username = "Username is required";
@@ -58,11 +65,39 @@ const Register = () => {
       } catch (err) {
         console.log(err);
 
-        if (err.response.status === 400) {
-          setErrors((prev) => ({
-            ...prev,
-            email: "Username or email already exists",
-          }));
+        if (err.response && err.response.status === 400) {
+          const errorResponse = err.response.data;
+
+          console.log("errorResponse:", errorResponse);
+
+          setErrors({
+            fullname: "",
+            username: "",
+            email: "",
+            password: "",
+          });
+
+          if (errorResponse.error === "Email already exists") {
+            setErrors((prev) => ({ ...prev, email: "Email already exists" }));
+          }
+
+          if (errorResponse.error === "Username already exists") {
+            setErrors((prev) => ({
+              ...prev,
+              username: "Username already exists",
+            }));
+          }
+
+          if (
+            errorResponse.error ===
+            "Password must be at least 8 characters long and contain at least one number and one special character"
+          ) {
+            setErrors((prev) => ({
+              ...prev,
+              password:
+                "Password must be at least 8 characters long and contain at least one number and one special character",
+            }));
+          }
         }
       }
     }
@@ -76,6 +111,16 @@ const Register = () => {
         <Form>
           <Input
             type="text"
+            placeholder="Full Name"
+            name="fullname"
+            onChange={handleChange}
+            value={inputs.fullname}
+            required
+            autoComplete="fullname"
+          />
+          <ErrorMessage>{errors.fullname}</ErrorMessage>
+          <Input
+            type="text"
             placeholder="Username"
             name="username"
             onChange={handleChange}
@@ -83,7 +128,7 @@ const Register = () => {
             required
             autoComplete="username"
           />
-          <ErrorMessage>{errors.username}</ErrorMessage>
+          {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
 
           <Input
             type="email"
@@ -94,7 +139,7 @@ const Register = () => {
             required
             autoComplete="email"
           />
-          <ErrorMessage>{errors.email}</ErrorMessage>
+          {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
 
           <Input
             type="password"
@@ -105,7 +150,7 @@ const Register = () => {
             required
             autoComplete="current-password"
           />
-          <ErrorMessage>{errors.password}</ErrorMessage>
+          {errors.password && <ErrorPassword>{errors.password}</ErrorPassword>}
 
           <Button onClick={handleSubmit} type="submit">
             Register
@@ -125,7 +170,16 @@ export default Register;
 const ErrorMessage = styled.div`
   color: #f00;
   font-size: 14px;
-  margin-top: 5px;
+  margin: 5px 0;
+  text-align: center;
+`;
+
+const ErrorPassword = styled.div`
+  color: #fff;
+  font-size: 12px;
+  margin: 5px 10px;
+
+  text-align: center;
 `;
 
 const Container = styled.div`

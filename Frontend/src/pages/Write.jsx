@@ -65,10 +65,10 @@ const Write = () => {
             {
               title,
               description: desc,
-              content: cont,
-              category: cat,
+              content: cont,             
               image: file.name ? imgUrl : "",
               date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+              category: cat,
             },
             { withCredentials: true }
           );
@@ -365,5 +365,6 @@ const Category = styled.div`
 
   label {
     cursor: pointer;
+    
   }
 `;
