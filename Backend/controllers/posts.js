@@ -27,9 +27,11 @@ const getAllPosts = async (req, res) => {
 
 const getSinglePost = async (req, res) => {
   const sql =
-    "SELECT posts.id, `username`, `title`, `description`,  posts.image, users.image AS userImage, `content`, `date`, `category` FROM users JOIN posts ON users.id = posts.uid WHERE posts.id = ?";
+    "SELECT posts.id, `fullname`, `username`,  `title`, `description`,  posts.image, users.image AS userImage, `content`, `date`, `category` FROM users JOIN posts ON users.id = posts.uid WHERE posts.id = ?";
+    
 
-  const values = [req.params.id];
+  const values = [req.params.id]; 
+
 
   pool.query(sql, values, (queryError, results) => {
     if (queryError) {
@@ -98,7 +100,7 @@ const createPost = async (req, res) => {
   }
 
   const sql =
-    "INSERT INTO posts(`title`, `description`, `Content`,	 `image`, `date`,`uid`, `Category` ) VALUES (?, ?, ?, ?, ?, ?)";
+    "INSERT INTO posts(`title`, `description`, `Content`,	 `image`, `date`,`uid`, `Category` ) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
   const values = [
     req.body.title,
