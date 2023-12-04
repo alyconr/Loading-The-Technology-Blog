@@ -26,33 +26,30 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const logout = async () => {
-
     try {
-    await axios.post(
-      "http://localhost:9000/api/v1/auth/logout",
-      {},
-      {
-        withCredentials: true,
-      }
-      
-    );
+      await axios.post(
+        "http://localhost:9000/api/v1/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
 
-    //delete cookie
-    /*
+      //delete cookie
+      /*
     document.cookie = "token=; max-age=0";*/
 
-    setcurrentUser(null);
-    toast.warning("Logout successfully", {
-      position: "bottom-right",
-      autoClose: 2500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      
-    });
+      setcurrentUser(null);
+      toast.warning("Logout successfully", {
+        position: "bottom-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (error) {
       console.log(error);
     }
