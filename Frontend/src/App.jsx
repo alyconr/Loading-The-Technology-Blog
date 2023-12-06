@@ -4,7 +4,7 @@ import {
   Outlet,
   useLocation,
 } from "react-router-dom";
-import {ToastContainer} from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
