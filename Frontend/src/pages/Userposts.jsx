@@ -1,62 +1,55 @@
-
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import useFetch from "../utils/useFetch";
 
+const Userposts = () => {
+  const location = useLocation();
 
-const  Userposts = () => {
+  const username = location.pathname.split("/")[2];
 
+  const {
+    data: posts,
+    loading,
+    error,
+  } = useFetch(`http://localhost:9000/api/v1/user/posts/${username}`);
 
-    const location = useLocation();
-
-    const username = location.pathname.split("/")[2];
-
-   
-    const {
-        data: posts,
-        loading,
-        error,
-    } = useFetch(`http://localhost:9000/api/v1/user/posts/${username}`)
-
- 
-    
-
-    return (
-        <Wrapper>
-          {error && <div>{error}</div>}
-          {loading ? (
-            <Loader>
-              <div className="loader">&#128238;</div>
-            </Loader>
+  return (
+    <Wrapper>
+      {error && <div>{error}</div>}
+      {loading ? (
+        <Loader>
+          <div className="loader">&#128238;</div>
+        </Loader>
+      ) : (
+        <>
+          {Array.isArray(posts) && posts.length > 0 ? (
+            posts.map((post) => (
+              <Post key={post.id}>
+                <img src={`/upload/${post.image}`} alt={post.title} />
+                <div className="Content">
+                  <PostLink to={`/singlepost/${post.id}`}>
+                    <h1>{post.title}</h1>
+                  </PostLink>
+                  <h3>{post.description}</h3>
+                  <Link to={`/singlepost/${post.id}`}>
+                    {" "}
+                    <Button>Read More</Button>
+                  </Link>
+                </div>
+              </Post>
+            ))
           ) : (
-            <>
-              {Array.isArray(posts) && posts.length > 0 ? (
-                posts.map((post) => (
-                  <Post key={post.id}>
-                    <img src={`/upload/${post.image}`} alt={post.title} />
-                    <div className="Content">
-                      <PostLink to={`/singlepost/${post.id}`}>
-                        <h1>{post.title}</h1>
-                      </PostLink>
-                      <h3>{post.description}</h3>
-                      <Link to={`/singlepost/${post.id}`}>
-                        {" "}
-                        <Button>Read More</Button>
-                      </Link>
-                    </div>
-                  </Post>
-                ))
-              ) : (
-                <NoPostsMessage>No posts yet, be the first to write one.</NoPostsMessage>
-              )}
-            </>
+            <NoPostsMessage>
+              No posts yet, be the first to write one.
+            </NoPostsMessage>
           )}
-        </Wrapper>
-      );
-}
- 
-export default Userposts;
+        </>
+      )}
+    </Wrapper>
+  );
+};
 
+export default Userposts;
 
 const Wrapper = styled.div`
   width: 100%;

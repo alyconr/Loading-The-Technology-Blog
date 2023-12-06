@@ -65,7 +65,7 @@ const Write = () => {
             {
               title,
               description: desc,
-              content: cont,             
+              content: cont,
               image: file.name ? imgUrl : "",
               date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
               category: cat,
@@ -73,7 +73,7 @@ const Write = () => {
             { withCredentials: true }
           );
 
-      toast.success("Post published successfully",{
+      toast.success("Post published successfully", {
         position: "bottom-right",
         autoClose: 2500,
         hideProgressBar: false,
@@ -114,6 +114,8 @@ const Write = () => {
           modules={{
             toolbar: [
               [{ header: [1, 2, 3, 4, 5, 6, false] }],
+              [{ font: ["serif", "sans-serif", "monospace", "Arial"] }],
+              [{ size: ["small", false, "large", "huge"] }],
               ["bold", "italic", "underline", "strike", "blockquote"],
               [{ list: "ordered" }, { list: "bullet" }],
               ["link", "image"],
@@ -125,6 +127,8 @@ const Write = () => {
           }}
           formats={[
             "header",
+            "font",
+            "size",
             "bold",
             "italic",
             "underline",
@@ -270,13 +274,14 @@ const Wrapper = styled.div`
 
     .Box-editor {
       height: 600px;
-      width: 100%;
+      max-width: 100%;
       border: 1px solid #ccc;
       border-radius: 5px;
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      overflow: auto;
+      overflow: hidden;
+      resize: vertical;
     }
 
     input {
@@ -365,6 +370,5 @@ const Category = styled.div`
 
   label {
     cursor: pointer;
-    
   }
 `;

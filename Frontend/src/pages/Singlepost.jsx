@@ -8,17 +8,14 @@ import axios from "axios";
 import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-import useFetch from "../utils/useFetch";
 
 import dompurify from "dompurify";
 import { toast } from "react-toastify";
-
+import ApplauseButton from "../components/ClapCounter";
 const Singlepost = () => {
   const [post, setPost] = useState({});
   const location = useLocation();
   const { currentUser } = useContext(AuthContext);
-
-
 
   const navigate = useNavigate();
 
@@ -31,6 +28,7 @@ const Singlepost = () => {
           `http://localhost:9000/api/v1/posts/${postId}`
         );
         setPost(res.data.post);
+        console.log(res.data.post);
       } catch (err) {
         console.log(err);
       }
@@ -75,8 +73,11 @@ const Singlepost = () => {
             <img className="userImg" src={post.userImage} alt="" />
           )}
           <div className="info">
-          <PostLink to={`/profile/${post.username}`}> <span>{post.fullname}</span></PostLink>
-           
+            <PostLink to={`/profile/${post.username}`}>
+              {" "}
+              <span>{post.fullname}</span>
+            </PostLink>
+
             <p>Posted {moment(post.createdAt).fromNow()}</p>
           </div>
           {currentUser &&
@@ -84,24 +85,30 @@ const Singlepost = () => {
             currentUser.user.username === post.username && (
               <div className="Actions">
                 <Link to={`/write?edit=${postId}`} state={post}>
-                  <FcEditImage size={25} />
+                  <FcEditImage size={30} />
                 </Link>
                 <Link to={`/singlepost/${postId}`}>
                   <BsFillTrashFill
                     onClick={handleDelete}
                     color={"#6A072D"}
-                    size={25}
+                    size={30}
                   />
                 </Link>
               </div>
             )}
+          <Claps>
+            <ApplauseButton className="applause" />
+          </Claps>
         </div>
         <h1>{post.title}</h1>
         <h3>{post.description}</h3>
         <div
           className="paragraph"
           dangerouslySetInnerHTML={createMarkup(post.content)}
+          style={{ maxWidth: "100%", overflow: "hidden" }}
         />
+
+        <ApplauseButton />
       </Post>
       <MenuSide>
         <MenuLeft category={post.category} />
@@ -118,12 +125,13 @@ const Wrapper = styled.div`
 `;
 
 const Post = styled.div`
-  flex: 10;
-  margin: 0 30px;
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  margin: 0 20px;
 
   .postImg {
     width: 100%;
-    height: 400px;
     border-radius: 5px;
     margin: 30px 0;
   }
@@ -172,6 +180,11 @@ const Post = styled.div`
     font-size: 20px;
     color: #555;
   }
+
+  @media screen and (max-width: 768px) {
+    width: 80%;
+    margin: 0 auto;
+  }
 `;
 
 const PostLink = styled(Link)`
@@ -182,5 +195,15 @@ const PostLink = styled(Link)`
   cursor: pointer;
 `;
 const MenuSide = styled.div`
-  flex: 5;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const Claps = styled.div`
+  display: flex;
 `;

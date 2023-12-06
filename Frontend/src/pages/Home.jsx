@@ -11,9 +11,6 @@ const Home = () => {
     error,
   } = useFetch(`http://localhost:9000/api/v1/posts${category}`);
 
-
-
-
   return (
     <Wrapper>
       {error && <div>{error}</div>}
