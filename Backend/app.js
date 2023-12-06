@@ -33,11 +33,13 @@ app.post("/api/v1/upload", upload.single("file"), (req, res) => {
 const authRouter = require("./routes/auth");
 const postsRouter = require("./routes/posts");
 const userRouter = require("./routes/users");
+const clapsRouter = require("./routes/claps");
 
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postsRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/claps", clapsRouter)
 
 app.get("/", (req, res) => {
   res.send("Hello World, IT WORKS");
