@@ -8,10 +8,11 @@ import axios from "axios";
 import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-
+import avatar from "../assets/avatar.avif";
 import dompurify from "dompurify";
 import { toast } from "react-toastify";
 import ApplauseButton from "../components/ClapCounter";
+import Comments from "../components/comments";
 const Singlepost = () => {
   const [post, setPost] = useState({});
   const location = useLocation();
@@ -28,7 +29,6 @@ const Singlepost = () => {
           `http://localhost:9000/api/v1/posts/${postId}`
         );
         setPost(res.data.post);
-        console.log(res.data.post);
       } catch (err) {
         console.log(err);
       }
@@ -109,6 +109,14 @@ const Singlepost = () => {
         />
 
         <ApplauseButton />
+        <ContainerComments>
+          <div className="user-info">
+            <img className="user-Img" src={avatar} alt="" />
+            <h1>{post.fullname}</h1>
+          </div>
+
+          <Comments />
+        </ContainerComments>
       </Post>
       <MenuSide>
         <MenuLeft category={post.category} />
@@ -206,4 +214,18 @@ const MenuSide = styled.div`
 
 const Claps = styled.div`
   display: flex;
+`;
+
+const ContainerComments = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: 40px 0 0 -10px;
+
+  .user-Img {
+    width: 100px;
+  }
+  .user-info {
+    display: flex;
+  }
 `;
