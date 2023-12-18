@@ -108,7 +108,7 @@ const ApplauseButton = () => {
 
   return (
     <Container>
-      {currentUser ? (
+      {!currentUser ? (
         <FaHandsClapping size={35} color="#61677A" />
       ) : (
         <button
@@ -116,6 +116,7 @@ const ApplauseButton = () => {
           className="applause-button"
           onClick={handleClick}
           disabled={totalClaps >= APPLAUSE_MAX}
+          title="Clap"
         >
           <div className="claps">
             {totalClaps === 0 && (
@@ -144,13 +145,17 @@ const ApplauseButton = () => {
 
           {showBubble && (
             <animated.div className="bubble" style={bubbleAnimation}>
-              {totalClaps}
+              +{totalClaps}
             </animated.div>
           )}
         </button>
       )}
       <>
-        <button onClick={handleUserClap} className="counter">
+        <button
+          onClick={handleUserClap}
+          className="counter"
+          title="View Users Claps "
+        >
           {totalClaps}{" "}
         </button>
         <Modal
@@ -203,6 +208,18 @@ const Container = styled.div`
 
   .applause-button:disabled {
     cursor: not-allowed;
+  }
+
+  .applause-button[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.5rem;
   }
 
   .claps {
@@ -275,6 +292,19 @@ const Container = styled.div`
     border-radius: 50%;
     padding: 0.5rem;
     border: none;
+    position: relative;
+  }
+
+  .counter[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.5rem;
   }
 `;
 const UserClaps = styled.div`
