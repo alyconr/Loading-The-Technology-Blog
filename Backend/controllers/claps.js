@@ -27,7 +27,6 @@ const createClap = async (req, res) => {
     "INSERT INTO claps (`user_id`, `post_id`, `applause_count` ) VALUES (?, ?, ?)";
 
   const values = [decoded.id, req.body.post_id, req.body.applause_count];
-  
 
   pool.query(sql, values, (queryError, results) => {
     if (queryError) {
