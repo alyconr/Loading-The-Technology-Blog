@@ -109,7 +109,9 @@ const ApplauseButton = () => {
   return (
     <Container>
       {!currentUser ? (
-        <FaHandsClapping size={35} color="#61677A" />
+        <Button title="Register to clap" className="applause-button">
+          <FaHandsClapping size={35} color="#61677A" />
+        </Button>
       ) : (
         <button
           type="button"
@@ -159,8 +161,8 @@ const ApplauseButton = () => {
           {totalClaps}{" "}
         </button>
         <Modal
-          size="lg"
           show={lgShow}
+          size="lg"
           onHide={() => setLgShow(false)}
           aria-labelledby="example-modal-sizes-title-lg"
         >
@@ -196,6 +198,7 @@ export default ApplauseButton;
 const Container = styled.div`
   display: flex;
   gap: 0.5rem;
+
   .applause-button {
     border: none;
     background-color: transparent;
@@ -204,6 +207,7 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     position: relative;
+    margin-left: 0.1rem;
   }
 
   .applause-button:disabled {
@@ -220,6 +224,27 @@ const Container = styled.div`
     background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
     padding: 0.5rem;
+  }
+
+  .fahandsclapping {
+    margin-left: 1.5rem;
+  }
+
+  .fahandsclapping:disabled {
+    cursor: not-allowed;
+  }
+
+  .fahandsclapping[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.5rem;
+    border: none;
   }
 
   .claps {
