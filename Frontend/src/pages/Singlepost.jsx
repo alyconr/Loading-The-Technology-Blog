@@ -13,14 +13,23 @@ import dompurify from "dompurify";
 import { toast } from "react-toastify";
 import ApplauseButton from "../components/ClapCounter";
 import Comments from "../components/comments";
+import { FaCommentDots } from "react-icons/fa";
+import { Offcanvas } from "react-bootstrap";
 const Singlepost = () => {
   const [post, setPost] = useState({});
   const location = useLocation();
   const { currentUser } = useContext(AuthContext);
 
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const navigate = useNavigate();
 
   const postId = location.pathname.split("/")[2];
+
+  const currentUserUsername = currentUser?.user?.username;
 
   useEffect(() => {
     const getPost = async () => {
@@ -78,27 +87,37 @@ const Singlepost = () => {
               <span>{post.fullname}</span>
             </PostLink>
 
-            <p>Posted {moment(post.createdAt).fromNow()}</p>
+            <p>Posted {moment(post.date).fromNow()}</p>
           </div>
-          {currentUser &&
-            currentUser.user &&
-            currentUser.user.username === post.username && (
-              <div className="Actions">
-                <Link to={`/write?edit=${postId}`} state={post}>
+          {currentUserUsername && currentUserUsername === post.username && (
+            <div className="Actions">
+              <Link to={`/write?edit=${postId}`} state={post}>
+                <button title="Edit" className="message">
                   <FcEditImage size={30} />
-                </Link>
-                <Link to={`/singlepost/${postId}`}>
+                </button>
+              </Link>
+              <Link to={`/singlepost/${postId}`}>
+                <button title="Delete" className="message">
                   <BsFillTrashFill
                     onClick={handleDelete}
                     color={"#6A072D"}
                     size={30}
                   />
-                </Link>
-              </div>
-            )}
+                </button>
+              </Link>
+            </div>
+          )}
           <Claps>
             <ApplauseButton className="applause" />
           </Claps>
+          <button
+            onClick={handleShow}
+            title=" View Comments"
+            className="message"
+          >
+            {" "}
+            <FaCommentDots className="comment" size={30} />
+          </button>
         </div>
         <h1>{post.title}</h1>
         <h3>{post.description}</h3>
@@ -107,16 +126,41 @@ const Singlepost = () => {
           dangerouslySetInnerHTML={createMarkup(post.content)}
           style={{ maxWidth: "100%", overflow: "hidden" }}
         />
+        <FooterAction>
+          <ApplauseButton />
+          <button
+            onClick={handleShow}
+            title=" View Comments"
+            className="message"
+          >
+            {" "}
+            <FaCommentDots className="comment" size={30} />
+          </button>
+        </FooterAction>
 
-        <ApplauseButton />
-        <ContainerComments>
-          <div className="user-info">
-            <img className="user-Img" src={avatar} alt="" />
-            <h1>{post.fullname}</h1>
-          </div>
+        <Offcanvas show={show} onHide={handleClose} className="w-50">
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title className="bg-dark text-light p-3 rounded ">
+              User Comments
+            </Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <ContainerComments>
+              {currentUserUsername ? (
+                <div className="user-info">
+                  <img className="user-Img" src={avatar} alt="" />
+                  <h3>{post.fullname} What are your thoughts?</h3>
+                </div>
+              ) : (
+                <h3 className="text-center text-danger pb-3">
+                  What are your thoughts?
+                </h3>
+              )}
 
-          <Comments />
-        </ContainerComments>
+              <Comments />
+            </ContainerComments>
+          </Offcanvas.Body>
+        </Offcanvas>
       </Post>
       <MenuSide>
         <MenuLeft category={post.category} />
@@ -137,6 +181,27 @@ const Post = styled.div`
   flex-direction: column;
   width: 70%;
   margin: 0 20px;
+
+  .message {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: #884dff;
+    margin-left: 5px;
+    position: relative;
+  }
+
+  .message[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.5rem;
+  }
 
   .postImg {
     width: 100%;
@@ -193,6 +258,24 @@ const Post = styled.div`
     width: 80%;
     margin: 0 auto;
   }
+
+  .comment {
+    margin-left: 10px;
+    cursor: pointer;
+    color: #884dff;
+  }
+
+  .comments-end[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.5rem;
+  }
 `;
 
 const PostLink = styled(Link)`
@@ -228,4 +311,9 @@ const ContainerComments = styled.div`
   .user-info {
     display: flex;
   }
+`;
+
+const FooterAction = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
