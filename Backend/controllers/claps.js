@@ -2,9 +2,7 @@ require("dotenv").config();
 const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
-const dbUrl = process.env.MYSQL_URI;
-const caPath = process.env.CA_PATH;
-const pool = require("../db/connect")(dbUrl, caPath);
+const pool = require("../db/connect");
 
 const createClap = async (req, res) => {
   const token = req.cookies.token;

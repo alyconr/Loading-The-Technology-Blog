@@ -1,9 +1,8 @@
 require("dotenv").config();
 const { StatusCodes } = require("http-status-codes");
 const bcrypt = require("bcryptjs");
-const dbURL = process.env.MYSQL_URI;
-const caPath = process.env.CA_PATH;
-const pool = require("../db/connect")(dbURL, caPath);
+
+const pool = require("../db/connect");
 
 const getAllUsers = async (req, res) => {
   const sql =
@@ -66,12 +65,10 @@ const updateUser = async (req, res) => {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   if (req.body.password && !req.body.password.match(passwordRegex)) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({
-        result:
-          "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-      });
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      result:
+        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+    });
   }
 
   const salt = await bcrypt.genSaltSync(10);

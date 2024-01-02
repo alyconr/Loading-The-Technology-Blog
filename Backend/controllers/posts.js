@@ -2,9 +2,7 @@ require("dotenv").config();
 const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
-const dbUrl = process.env.MYSQL_URI;
-const caPath = process.env.CA_PATH;
-const pool = require("../db/connect")(dbUrl, caPath);
+const pool = require("../db/connect");
 
 const getAllPosts = async (req, res) => {
   const sql = req.query.category
@@ -28,10 +26,8 @@ const getAllPosts = async (req, res) => {
 const getSinglePost = async (req, res) => {
   const sql =
     "SELECT posts.id, `fullname`, `username`,  `title`, `description`,  posts.image, users.image AS userImage, `content`, `date`, `category` FROM users JOIN posts ON users.id = posts.uid WHERE posts.id = ?";
-    
 
-  const values = [req.params.id]; 
-
+  const values = [req.params.id];
 
   pool.query(sql, values, (queryError, results) => {
     if (queryError) {
@@ -78,7 +74,6 @@ const deletePost = async (req, res) => {
     }
   });
 };
-
 
 const createPost = async (req, res) => {
   const token = req.cookies.token;
@@ -143,7 +138,6 @@ const updatePost = async (req, res) => {
     return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
   }
 
-
   const sql =
     "UPDATE posts SET `title` = ?, `description` = ?, `Content` = ?, `image` = ?,  `Category` = ? WHERE `id` = ? AND `uid` = ?";
 
@@ -164,7 +158,9 @@ const updatePost = async (req, res) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Database query error" });
     } else {
-      res.status(StatusCodes.OK).json({ post: results, message: "Post updated successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ post: results, message: "Post updated successfully" });
     }
   });
 };

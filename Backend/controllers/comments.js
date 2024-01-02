@@ -2,9 +2,7 @@ require("dotenv").config();
 const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
-const dbUrl = process.env.MYSQL_URI;
-const caPath = process.env.CA_PATH;
-const pool = require("../db/connect")(dbUrl, caPath);
+const pool = require("../db/connect");
 
 const createComment = async (req, res) => {
   const token = req.cookies.token;
@@ -13,7 +11,7 @@ const createComment = async (req, res) => {
     // check if token exists
     return res
       .status(StatusCodes.UNAUTHORIZED)
-      .json({ error: "Unauthorized no token" });
+      .json({ error: "Unauthorized no token " });
   }
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -41,9 +39,10 @@ const createComment = async (req, res) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Database query error" });
     } else {
-      res
-        .status(StatusCodes.OK)
-        .json({ message: "Comment posted successfully", fullname: decoded.fullname });
+      res.status(StatusCodes.OK).json({
+        message: "Comment posted successfully",
+        fullname: decoded.fullname,
+      });
     }
   });
 };
@@ -65,7 +64,27 @@ const getComments = async (req, res) => {
   });
 };
 
+const deleteComment = async (req, res) => {
+  const sql = "DELETE FROM comments WHERE id = ?";
+
+  const values = [req.params.id];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Comment deleted successfully" });
+    }
+  });
+};
+
 module.exports = {
   createComment,
   getComments,
+  deleteComment,
 };
