@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-
 const app = express();
 
 app.use(express.json());
@@ -36,12 +35,11 @@ const userRouter = require("./routes/users");
 const clapsRouter = require("./routes/claps");
 const commentsRouter = require("./routes/comments");
 
-
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postsRouter);
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/claps", clapsRouter)
-app.use("/api/v1/comments", commentsRouter)
+app.use("/api/v1/claps", clapsRouter);
+app.use("/api/v1/comments", commentsRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World, IT WORKS");
