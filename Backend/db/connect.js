@@ -33,11 +33,22 @@ const createPool = (url, caPath) => {
           } else {
             console.log("Reconnected to MySQL");
 
-            // Update the existing connection with the new connection configuration
-            connection.config = newConnection.config;
+            // Attempt to reconnect to the database again
+            pool.getConnection((reconnectErr, newConnection) => {
+              if (reconnectErr) {
+                console.error("Reconnection failed:", reconnectErr);
+              } else {
+                console.log("Reconnected to MySQL");
+                // Release the existing connection back to the pool
+                pool.releaseConnection(connection);
 
-            // Release the new connection back to the pool
-            newConnection.release();
+                // Update the existing connection with the new connection configuration
+                connection.config = newConnection.config;
+
+                // Release the new connection back to the pool
+                newConnection.release();
+              }
+            });
           }
         });
       } else {
