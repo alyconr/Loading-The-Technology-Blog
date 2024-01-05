@@ -257,6 +257,7 @@ const Comments = () => {
                         [{ align: [] }],
                         ["code-block"],
                       ],
+                      
                     }}
                     formats={[
                       "bold",
