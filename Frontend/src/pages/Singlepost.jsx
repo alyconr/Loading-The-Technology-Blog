@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { BsFillTrashFill } from "@react-icons/all-files/bs/BsFillTrashFill";
 import { FcEditImage } from "@react-icons/all-files/fc/FcEditImage";
+import { FaUsers } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import MenuLeft from "../components/Menuside";
 import { useEffect, useState } from "react";
@@ -8,7 +9,7 @@ import axios from "axios";
 import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-import avatar from "../assets/avatar.avif";
+import avatar from "../assets/user.png";
 import dompurify from "dompurify";
 import { toast } from "react-toastify";
 import ApplauseButton from "../components/ClapCounter";
@@ -137,19 +138,21 @@ const Singlepost = () => {
             <FaCommentDots className="comment" size={30} />
           </button>
         </FooterAction>
-
         <Offcanvas show={show} onHide={handleClose} className="w-50">
           <Offcanvas.Header closeButton>
             <Offcanvas.Title className="bg-dark text-light p-3 rounded ">
-              User Comments
+              User Comments <FaUsers size={30} />
             </Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
             <ContainerComments>
-              {currentUserUsername ? (
+              {currentUser ? (
                 <div className="user-info">
-                  <img className="user-Img" src={avatar} alt="" />
-                  <h3>{post.fullname} What are your thoughts?</h3>
+                  <img className="user-Img" src={avatar} alt="avatar" />
+                  <h4 className="text-dark ">
+                    {currentUser.user.fullname}{" "}
+                    <p className="text-danger">What are your thoughts?</p>{" "}
+                  </h4>
                 </div>
               ) : (
                 <h3 className="text-center text-danger pb-3">
@@ -303,10 +306,12 @@ const ContainerComments = styled.div`
   display: flex;
   flex-direction: column;
   width: 80%;
-  margin: 40px 0 0 -10px;
+  margin: 40px 0 0 0px;
 
   .user-Img {
-    width: 100px;
+    width: 75px;
+    height: 75px;
+    margin-right: 15px;
   }
   .user-info {
     display: flex;
