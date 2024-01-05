@@ -83,8 +83,28 @@ const deleteComment = async (req, res) => {
   });
 };
 
+const updateComment = async (req, res) => {
+  const sql = "UPDATE comments SET comment = ? WHERE id = ?";
+
+  const values = [req.body.comment, req.params.id];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Comment updated successfully" });
+    }
+  });
+};
+
 module.exports = {
   createComment,
   getComments,
   deleteComment,
+  updateComment,
 };
