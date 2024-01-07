@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 const fs = require("fs");
+
 const dbUrl = process.env.MYSQL_URI;
 const caPath = process.env.CA_PATH;
 
@@ -33,22 +34,14 @@ const createPool = (url, caPath) => {
           } else {
             console.log("Reconnected to MySQL");
 
-            // Attempt to reconnect to the database again
-            pool.getConnection((reconnectErr, newConnection) => {
-              if (reconnectErr) {
-                console.error("Reconnection failed:", reconnectErr);
-              } else {
-                console.log("Reconnected to MySQL");
-                // Release the existing connection back to the pool
-                pool.releaseConnection(connection);
+            // Release the existing connection back to the pool
+            pool.releaseConnection(connection);
 
-                // Update the existing connection with the new connection configuration
-                connection.config = newConnection.config;
+            // Update the existing connection with the new connection configuration
+            connection.config = newConnection.config;
 
-                // Release the new connection back to the pool
-                newConnection.release();
-              }
-            });
+            // Release the new connection back to the pool
+            newConnection.release();
           }
         });
       } else {
@@ -57,7 +50,32 @@ const createPool = (url, caPath) => {
     });
   });
 
+  // Add a keep-alive mechanism
+  setInterval(() => {
+    pool.query("SELECT 1", (err, results) => {
+      if (err) {
+        console.error("Keep-alive query failed:", err);
+      } else {
+        console.log("Keep-alive query executed successfully");
+      }
+    });
+  }, 3600000); // Check every 1 hour
+
   return pool;
 };
 
-module.exports = createPool(dbUrl, caPath);
+const pool = createPool(dbUrl, caPath);
+
+// Example query
+pool.query("SELECT SUM(claps.applause_count) AS total_claps FROM claps", (err, results) => {
+  if (err) {
+    console.error("MySQL query error:", err);
+  } else {
+    console.log("Query results:", results);
+  }
+});
+
+// Close the pool when the application is finished
+process.on("exit", () => {
+  pool.end();
+});
