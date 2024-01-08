@@ -11,12 +11,17 @@ import { AuthContext } from "../context/authContext";
 import { useContext } from "react";
 import { BsFillTrashFill } from "@react-icons/all-files/bs/BsFillTrashFill";
 import { FcEditImage } from "@react-icons/all-files/fc/FcEditImage";
+import { FaCommentMedical } from "react-icons/fa6";
 import { BiSolidCommentAdd } from "react-icons/bi";
+import { MdOutlinePostAdd } from "react-icons/md";
+import { MdCancelPresentation } from "react-icons/md";
 import ClapsOnComments from "./clapsOnCommentsCounter";
 import CommentOnComments from "./commentOnComments";
+import { toast } from "react-toastify";
 
 const Comments = () => {
   const [newComment, setNewComment] = useState("");
+  const [newCommentOnComment, setNewCommentOnComment] = useState("");
   const [commentList, setCommentList] = useState([]);
   const [postCommentTrigger, setPostCommentTrigger] = useState(false);
   const [editCommentId, setEditCommentId] = useState(null); // Track the comment being edited
@@ -53,8 +58,11 @@ const Comments = () => {
     }
   }, [postCommentTrigger]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    if (newComment.trim() === "") {
+      toast.error("Comment cannot be empty");
+      return;
+    }
     try {
       const response = await axios.post(
         `http://localhost:9000/api/v1/comments/${urlId}`,
@@ -173,11 +181,21 @@ const Comments = () => {
       <Action>
         {editCommentId ? (
           <>
-            <Button onClick={handleUpdate}>Update</Button>
-            <Button onClick={handleCancelEdit}>Cancel</Button>
+            <button title="Update" className="message" onClick={handleUpdate}>
+              <MdOutlinePostAdd size={35} color="#007bff" />
+            </button>
+            <button
+              title="Cancel"
+              className="message"
+              onClick={handleCancelEdit}
+            >
+              <MdCancelPresentation size={35} color="FF3333" />
+            </button>
           </>
         ) : currentUser ? (
-          <Button onClick={handleSubmit}>Comment</Button>
+          <button className="message" title="Comment" onClick={handleSubmit}>
+            <FaCommentMedical size={35} color="#007bff" />
+          </button>
         ) : (
           <Link className="login" to="/login">
             Login to comment
@@ -246,8 +264,8 @@ const Comments = () => {
                   <ReactQuill
                     className="Box-editor w-75"
                     placeholder="Write your comment here..."
-                    value={newComment}
-                    onChange={setNewComment}
+                    value={newCommentOnComment}
+                    onChange={setNewCommentOnComment}
                     modules={{
                       toolbar: [
                         ["bold", "italic", "underline", "strike"],
@@ -257,7 +275,6 @@ const Comments = () => {
                         [{ align: [] }],
                         ["code-block"],
                       ],
-                      
                     }}
                     formats={[
                       "bold",
@@ -274,8 +291,8 @@ const Comments = () => {
                   <div className="d-flex justify-content-start ">
                     <CommentOnComments
                       id={comment.id}
-                      newComment={newComment}
-                      setNewComment={setNewComment}
+                      newCommentOnComment={newCommentOnComment}
+                      setNewCommentOnComment={setNewCommentOnComment}
                     />
                   </div>
                 </div>
@@ -307,23 +324,30 @@ const Container = styled.div`
   }
 `;
 
-const Button = styled.button`
-  padding: 0.5rem 0.5rem;
-  border-radius: 5px;
-  border: none;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 12%;
-`;
-
 const Action = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   margin: 10px -100px;
   gap: 10px;
+  .message {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .message[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.5rem;
+  }
 
   .login {
     text-decoration: none;
