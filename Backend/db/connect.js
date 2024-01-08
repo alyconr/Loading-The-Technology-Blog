@@ -59,7 +59,7 @@ const createPool = (url, caPath) => {
         console.log("Keep-alive query executed successfully");
       }
     });
-  }, 3600000); // Check every 1 hour
+  }, 360000); // check every 6 minutes
 
   return pool;
 };
@@ -79,3 +79,5 @@ pool.query("SELECT SUM(claps.applause_count) AS total_claps FROM claps", (err, r
 process.on("exit", () => {
   pool.end();
 });
+
+module.exports = pool;
