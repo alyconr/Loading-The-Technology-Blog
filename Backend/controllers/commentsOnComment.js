@@ -62,4 +62,47 @@ const getCommentsOnComments = async (req, res) => {
   });
 };
 
-module.exports = { createCommentsOnComment, getCommentsOnComments };
+const deleteCommentsOnComment = async (req, res) => {
+  const sql = "DELETE FROM comment_onComments WHERE id = ?";
+
+  const values = [req.params.id];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Comment deleted successfully" });
+    }
+  });
+};
+
+const updateCommentOnComment = async (req, res) => {
+  const sql = "UPDATE comment_onComments SET comment = ? WHERE id = ?";
+
+  const values = [req.body.comment, req.params.id];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Comment updated successfully" });
+    }
+  });
+};
+
+module.exports = {
+  createCommentsOnComment,
+  getCommentsOnComments,
+  deleteCommentsOnComment,
+  updateCommentOnComment,
+};
