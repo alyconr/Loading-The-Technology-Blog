@@ -8,7 +8,7 @@ import { AuthContext } from "../context/authContext";
 import { useContext } from "react";
 import axios from "axios";
 import moment from "moment";
-import ClapsOnComments from "./clapsOnCommentsCounter";
+import ClapsCommentsOnComments from "./clapsCommentsOnCommnets";
 import { BsFillTrashFill } from "@react-icons/all-files/bs/BsFillTrashFill";
 import { FcEditImage } from "@react-icons/all-files/fc/FcEditImage";
 import { FaCommentMedical } from "react-icons/fa6";
@@ -195,7 +195,7 @@ const CommentOnComments = ({
               </PostedTime>
 
               <div className="d-flex gap-2 justify-content-end">
-                <ClapsOnComments id={comment.id} />
+                <ClapsCommentsOnComments id={comment.id} />
                 <div>
                   <button
                     title="Edit"
