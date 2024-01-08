@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(cookieParser());
 
+
 // multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -35,6 +36,7 @@ const userRouter = require("./routes/users");
 const clapsRouter = require("./routes/claps");
 const commentsRouter = require("./routes/comments");
 const clapsOnCommentsRouter = require("./routes/clapsOnComment");
+const clapsCommentsOnCommentsRouter = require("./routes/clapsCommentsOnComments");
 const comentsOnCommentRouter = require("./routes/commentsOnComments");
 
 app.use("/api/v1/auth", authRouter);
@@ -42,6 +44,7 @@ app.use("/api/v1/posts", postsRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/claps", clapsRouter);
 app.use("/api/v1/clapsoncomments", clapsOnCommentsRouter);
+app.use("/api/v1/clapsoncommentsoncomment", clapsCommentsOnCommentsRouter);
 app.use("/api/v1/comments", commentsRouter);
 app.use("/api/v1/commentsoncomment", comentsOnCommentRouter);
 
