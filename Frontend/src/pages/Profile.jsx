@@ -20,6 +20,8 @@ const Profile = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
+  const [file, setFile] = useState("");
+
   const [company, setCompany] = useState("");
   const [place, setPlace] = useState("");
   const [social1, setSocial1] = useState("");
@@ -55,6 +57,7 @@ const Profile = () => {
           setName(res.data[0]?.fullname || "");
           setPassword(res.data[0]?.password || "");
           setBio(res.data[0]?.bio || "");
+          setFile(res.data[0].image || null);
           setCompany(res.data[0]?.company || "");
           setPlace(res.data[0]?.location || "");
           setSocial1(res.data[0]?.social1 || "");
@@ -74,7 +77,21 @@ const Profile = () => {
   const handleCloseErrorModal = () => setShowErrorModal(false);
 
   const handleSave = async () => {
+    let imgUrl = "";
     try {
+      const formData = new FormData();
+
+      if (file) {
+        formData.append("file", file);
+
+        const response = await axios.post(
+          "http://localhost:9000/api/v1/upload",
+          formData
+        );
+        imgUrl = response.data;
+        formData.append("image", imgUrl); // Append the image URL to the formData
+      }
+
       const res = await axios.put(
         `http://localhost:9000/api/v1/user/${currentUser?.user.username}`,
         {
@@ -82,6 +99,7 @@ const Profile = () => {
           username,
           password,
           bio,
+          image: file ? imgUrl : user.userImage,
           company,
           location: place,
           social1,
@@ -92,6 +110,7 @@ const Profile = () => {
           credentials: "include",
         }
       );
+
       setIsEditMode(false);
       navigate(`/profile/${currentUser?.user.username}`);
       toast.success("Profile updated successfully", {
@@ -123,7 +142,13 @@ const Profile = () => {
       <Container>
         {!isEditMode ? (
           <ProfileContainer>
-            {user.userImage && <img src="avatar.avif" alt={user.fullname} />}
+            {user.userImage && (
+              <img
+                className="userImg"
+                src={`../upload/${user.userImage}`}
+                alt={user.image}
+              />
+            )}
             <h1>{user.fullname}</h1>
             <h3>{user.username}</h3>
             <p>{user.bio}</p>
@@ -174,6 +199,13 @@ const Profile = () => {
         ) : (
           <EditProfile>
             <form>
+              {user.userImage && (
+                <img
+                  className="userImg"
+                  src={`../upload/${user.userImage}`}
+                  alt={user.image}
+                />
+              )}
               <label htmlFor="name">Full Name</label>
               <input
                 type="text"
@@ -205,10 +237,12 @@ const Profile = () => {
                 type="file"
                 name=""
                 id="file"
+                onChange={(e) => setFile(e.target.files[0])}
               />
               <label className="input-file" htmlFor="file">
                 Upload Profile Image
               </label>
+              <h6>{(file && `${file?.name}`) || `${user?.userImage}`} </h6>
               <label>Company</label>
               <input
                 type="text"
@@ -330,6 +364,15 @@ const ProfileContainer = styled.div`
     color: #7e727c;
     cursor: pointer;
   }
+
+  .userImg {
+    width: 150px;
+    height: 150px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 `;
 const EditProfile = styled.div`
   display: flex;
@@ -436,6 +479,14 @@ const EditProfile = styled.div`
     display: flex;
     justify-content: space-between;
     gap: 0.5rem;
+  }
+
+  .userImg {
+    width: 150px;
+    height: 150px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
   }
 `;
 
