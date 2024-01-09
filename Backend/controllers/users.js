@@ -75,12 +75,13 @@ const updateUser = async (req, res) => {
   const hashedPassword = await bcrypt.hashSync(req.body.password, salt);
 
   const sql =
-    "UPDATE users SET `fullname` = ?, `password`= ?, `bio` = ?, `company` = ?, `location` = ?, `social1` = ?, `social2` = ? WHERE `username` = ?";
+    "UPDATE users SET `fullname` = ?, `password`= ?, `bio` = ?, `image` = ?,`company` = ?, `location` = ?, `social1` = ?, `social2` = ? WHERE `username` = ?";
 
   const values = [
     req.body.fullname,
     hashedPassword,
     req.body.bio,
+    req.body.image,
     req.body.company,
     req.body.location,
     req.body.social1,
