@@ -10,7 +10,6 @@ app.use(express.json());
 app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
 app.use(cookieParser());
 
-
 // multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -27,6 +26,13 @@ const upload = multer({
 
 app.post("/api/v1/upload", upload.single("file"), (req, res) => {
   const file = req.file;
+
+  if (!file) {
+    // If no file is provided, you can handle it accordingly
+    res.status(400).json({ error: "No file uploaded" });
+    return;
+  }
+
   res.status(200).json(file.filename);
 });
 
