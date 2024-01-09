@@ -18,6 +18,7 @@ import { FaCommentDots } from "react-icons/fa";
 import { Offcanvas } from "react-bootstrap";
 const Singlepost = () => {
   const [post, setPost] = useState({});
+  const [userImage, setUserImage] = useState("");
   const location = useLocation();
   const { currentUser } = useContext(AuthContext);
 
@@ -39,6 +40,16 @@ const Singlepost = () => {
           `http://localhost:9000/api/v1/posts/${postId}`
         );
         setPost(res.data.post);
+
+        const userRes = await axios.get(
+          `http://localhost:9000/api/v1/user/${res.data.post.username}`,
+          {
+            withCredentials: true,
+            credentials: "include",
+          }
+        );
+
+        setUserImage(userRes.data[0]?.userImage || "");
       } catch (err) {
         console.log(err);
       }
@@ -79,8 +90,12 @@ const Singlepost = () => {
       <Post>
         <img className="postImg" src={`../upload/${post.image}`} alt="" />
         <div className="user">
-          {post.userImage && (
-            <img className="userImg" src={post.userImage} alt="" />
+          {userImage && (
+            <img
+              className="userImg"
+              src={`../upload/${userImage}`}
+              alt={userImage}
+            />
           )}
           <div className="info">
             <PostLink to={`/profile/${post.username}`}>
@@ -222,6 +237,7 @@ const Post = styled.div`
       height: 50px;
       border-radius: 50%;
       object-fit: cover;
+      margin-top: -15px;
       margin-right: 10px;
     }
   }
