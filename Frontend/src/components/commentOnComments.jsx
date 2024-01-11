@@ -14,11 +14,13 @@ import { FcEditImage } from "@react-icons/all-files/fc/FcEditImage";
 import { FaCommentMedical } from "react-icons/fa6";
 import { MdOutlinePostAdd } from "react-icons/md";
 import { MdCancelPresentation } from "react-icons/md";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
 const CommentOnComments = ({
   id,
   newCommentOnComment,
   setNewCommentOnComment,
+  post,
+  setPost,
 }) => {
   const [commentList, setCommentList] = useState([]);
   const [cont, setCont] = useState([]);
@@ -62,8 +64,6 @@ const CommentOnComments = ({
   };
 
   const handlePostComment = async () => {
-   
-
     if (newCommentOnComment.trim() === "") {
       toast.error("Comment cannot be empty");
       return;
@@ -181,7 +181,11 @@ const CommentOnComments = ({
         {commentList.map((comment, index) => (
           <Comment key={index}>
             <div className="user">
-              <img src={avatar} className="user-Img" alt="avatar" />
+              <img
+                src={`../upload/${post.userImage}`}
+                className="user-Img"
+                alt="avatar"
+              />
               <h2>{comment.fullname}</h2>
             </div>
             <div
@@ -234,7 +238,7 @@ const Action = styled.div`
   margin: 10px 6.5rem;
 
   .update-cancel {
-   padding: 0.5rem 0;
+    padding: 0.5rem 0;
   }
 
   .message {

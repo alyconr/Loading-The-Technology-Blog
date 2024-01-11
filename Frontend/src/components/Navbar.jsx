@@ -6,6 +6,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { CgProfile } from "react-icons/cg";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { IoSettingsOutline } from "react-icons/io5";
+import logo from "../assets/logo.png";
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
 
@@ -24,7 +25,7 @@ const Navbar = () => {
       <div className="container">
         <Link className="link" to="/">
           <Logo>
-            <img src="logo.png" alt="logo" />
+            <img src={logo} alt={logo} />
           </Logo>
         </Link>
 
