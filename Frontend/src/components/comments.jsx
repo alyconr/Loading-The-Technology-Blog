@@ -19,7 +19,7 @@ import ClapsOnComments from "./clapsOnCommentsCounter";
 import CommentOnComments from "./commentOnComments";
 import { toast } from "react-toastify";
 
-const Comments = () => {
+const Comments = ({ post, setPost }) => {
   const [newComment, setNewComment] = useState("");
   const [newCommentOnComment, setNewCommentOnComment] = useState("");
   const [commentList, setCommentList] = useState([]);
@@ -207,13 +207,17 @@ const Comments = () => {
           commentList.map((comment, index) => (
             <Comment key={index}>
               <div className="user">
-                <img className="user-Img" src={avatar} alt="avatar" />
+                <img
+                  className="user-Img"
+                  src={`../upload/${post.userImage}`}
+                  alt={post.userImage}
+                />
                 <h2>{comment.fullname}</h2>
               </div>
               {editCommentId === comment.id ? (
                 <div>
                   {" "}
-                  <h6 className="ms-5 p-2">
+                  <h6 className="ms-5 p-2 bg-primary text-white rounded">
                     Update your comment in the box editor above
                   </h6>
                 </div>
@@ -293,6 +297,8 @@ const Comments = () => {
                       id={comment.id}
                       newCommentOnComment={newCommentOnComment}
                       setNewCommentOnComment={setNewCommentOnComment}
+                      post={post}
+                      setPost={setPost}
                     />
                   </div>
                 </div>
@@ -399,8 +405,9 @@ const Comment = styled.div`
   }
 
   .user-Img {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
   }
 `;
 
