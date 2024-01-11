@@ -163,7 +163,11 @@ const Singlepost = () => {
             <ContainerComments>
               {currentUser ? (
                 <div className="user-info">
-                  <img className="user-Img" src={avatar} alt="avatar" />
+                  <img
+                    className="user-Img"
+                    src={`../upload/${post.userImage}`}
+                    alt="avatar"
+                  />
                   <h4 className="text-dark ">
                     {currentUser.user.fullname}{" "}
                     <p className="text-danger">What are your thoughts?</p>{" "}
@@ -175,7 +179,7 @@ const Singlepost = () => {
                 </h3>
               )}
 
-              <Comments />
+              <Comments post={post} setPost={setPost} />
             </ContainerComments>
           </Offcanvas.Body>
         </Offcanvas>
@@ -328,6 +332,7 @@ const ContainerComments = styled.div`
     width: 75px;
     height: 75px;
     margin-right: 15px;
+    border-radius: 50%;
   }
   .user-info {
     display: flex;
