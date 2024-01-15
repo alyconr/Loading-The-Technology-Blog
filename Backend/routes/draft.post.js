@@ -6,6 +6,6 @@ const {
   createDraftPost,
 } = require("../controllers/draft.post");
 
-router.route("/").get(getAllDraftPosts).post(createDraftPost);
+router.route("/").get(getAllDraftPosts).post(createDraftPost); 
 
 module.exports = router;
