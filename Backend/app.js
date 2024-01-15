@@ -44,9 +44,11 @@ const commentsRouter = require("./routes/comments");
 const clapsOnCommentsRouter = require("./routes/clapsOnComment");
 const clapsCommentsOnCommentsRouter = require("./routes/clapsCommentsOnComments");
 const comentsOnCommentRouter = require("./routes/commentsOnComments");
+const draftPostsRouter = require("./routes/draft.post");
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postsRouter);
+app.use("/api/v1/draftposts", draftPostsRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/claps", clapsRouter);
 app.use("/api/v1/clapsoncomments", clapsOnCommentsRouter);
