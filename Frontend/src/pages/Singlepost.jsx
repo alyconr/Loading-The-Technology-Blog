@@ -31,8 +31,7 @@ const Singlepost = () => {
 
   const postId = location.pathname.split("/")[2];
 
-  const currentUserUsername = currentUser?.user?.username; 
-  
+  const currentUserUsername = currentUser?.user?.username;
 
   useEffect(() => {
     const getPost = async () => {
@@ -41,8 +40,6 @@ const Singlepost = () => {
           `http://localhost:9000/api/v1/posts/${postId}`
         );
         setPost(res.data.post);
-     
-        
 
         const userRes = await axios.get(
           `http://localhost:9000/api/v1/user/${res.data.post.username}`,
@@ -50,7 +47,7 @@ const Singlepost = () => {
             withCredentials: true,
             credentials: "include",
           }
-        );        
+        );
         setUserImage(userRes.data[0]?.userImage || "");
       } catch (err) {
         console.log(err);
