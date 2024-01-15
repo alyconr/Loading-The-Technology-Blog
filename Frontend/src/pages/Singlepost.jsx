@@ -165,7 +165,7 @@ const Singlepost = () => {
                   <img
                     className="user-Img"
                     src={`../upload/${currentUser.user.image}`}
-                    alt={userImage}
+                    alt={currentUser.user.image}
                   />
                   <h4 className="text-dark ">
                     {currentUser.user.fullname}{" "}
