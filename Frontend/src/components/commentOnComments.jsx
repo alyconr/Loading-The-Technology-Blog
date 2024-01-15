@@ -182,9 +182,9 @@ const CommentOnComments = ({
           <Comment key={index}>
             <div className="user">
               <img
-                src={`../upload/${post.userImage}`}
+                src={`../upload/${currentUser.user.image}`}
                 className="user-Img"
-                alt="avatar"
+                alt={currentUser.user.image}
               />
               <h2>{comment.fullname}</h2>
             </div>

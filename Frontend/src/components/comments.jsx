@@ -209,7 +209,7 @@ const Comments = ({ post, setPost }) => {
               <div className="user">
                 <img
                   className="user-Img"
-                  src={`../upload/${post.userImage}`}
+                  src={`../upload/${currentUser.user.image}`}
                   alt={post.userImage}
                 />
                 <h2>{comment.fullname}</h2>
