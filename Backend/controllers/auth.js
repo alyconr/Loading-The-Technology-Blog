@@ -39,12 +39,10 @@ const register = async (req, res) => {
         /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
       if (!passwordRegex.test(req.body.password)) {
-        return res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({
-            error:
-              "Password must be at least 8 characters long and contain at least one number and one special character",
-          });
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          error:
+            "Password must be at least 8 characters long and contain at least one number and one special character",
+        });
       }
 
       const salt = bcrypt.genSaltSync(10);
