@@ -59,9 +59,54 @@ const createDraftPost = async (req, res) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Database query error" });
     } else {
-      res.status(StatusCodes.OK).json({ post: results });
+      res.status(StatusCodes.OK).json({ post: results.insertId });
     }
   });
 };
 
-module.exports = { getAllDraftPosts, createDraftPost }; // export getAllDraftPosts
+const updateDraftPost = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    // check if token exists
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Unauthorized no token" });
+  }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!decoded) {
+    // check if token is valid
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Unauthorized invalid token" });
+  }
+
+  const values = [
+    req.body.title,
+    req.body.description,
+    req.body.content,
+    req.body.image,
+    req.body.date,
+    decoded.id,
+    req.body.category,
+    req.params.id,
+  ];
+
+  const sql =
+    "UPDATE posts_draft SET `title` = ?, `description` = ?, `content` = ?, `image` = ?, `date` = ?, `userId` = ?, `category` = ? WHERE `id` = ?";
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json({ post: results.insertId });
+    }
+  });
+};
+
+module.exports = { getAllDraftPosts, createDraftPost, updateDraftPost }; // export getAllDraftPosts
