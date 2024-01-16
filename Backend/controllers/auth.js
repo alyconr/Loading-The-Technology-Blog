@@ -104,7 +104,7 @@ const login = async (req, res) => {
     }
     const user = results[0];
 
-    if (!bcrypt.compareSync(password, user.password)) {
+    if (bcrypt.compareSync(password, user.password)) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
         .json({ error: "Invalid password" });
@@ -116,6 +116,7 @@ const login = async (req, res) => {
         username: user.username,
         fullname: user.fullname,
         email: user.email,
+        image: user.image,
       },
       process.env.JWT_SECRET,
       {
@@ -137,6 +138,7 @@ const login = async (req, res) => {
           username: user.username,
           fullname: user.fullname,
           email: user.email,
+          image: user.image,
           token,
         },
       });
