@@ -1,11 +1,13 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { debounced } from "../utils/debounce";
+
 const Write = () => {
   const location = useLocation();
   const [title, setTitle] = useState(location?.state?.title || "");
@@ -13,8 +15,57 @@ const Write = () => {
   const [cont, setCont] = useState(location?.state?.content || "");
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState(location?.state?.category || "");
+  const [draftSaved, setDraftSaved] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log("useEffect tirggered");
+    const saveDraftAutomatically = async () => {
+      console.log("saveDraftAutomatically called");
+      if (title && desc && cont && cat && file) {
+        try {
+          await axios.post(
+            "http://localhost:9000/api/v1/draftposts",
+            {
+              title,
+              description: desc,
+              content: cont,
+              image: file ? file.name : "",
+              category: cat,
+            },
+            {
+              withCredentials: true,
+            }
+          );
+          setDraftSaved(true);
+          toast.info("Draft saved successfully", {
+            position: "bottom-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+        } catch (err) {
+          console.error("Error saving draft:", err);
+          toast.error("Error saving draft");
+        }
+      }
+    };
+
+    const debounceSaveDraft = debounced.debounced(saveDraftAutomatically, 1000);
+
+    // Listen for changes in title, desc, cont, cat, and file
+    debounceSaveDraft();
+
+    return () => {
+      console.log("useEffect cleanup called");
+      debounced.cancel();
+    };
+  }, [title, desc, cont, cat, file]);
 
   const handleClick = async (e) => {
     e.preventDefault();
