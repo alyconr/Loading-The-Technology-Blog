@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import Dropdown from "react-bootstrap/Dropdown";
 import { CgProfile } from "react-icons/cg";
@@ -9,6 +9,10 @@ import { IoSettingsOutline } from "react-icons/io5";
 import logo from "../assets/logo.png";
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
+
+  const location = useLocation();
+
+  const draftId= location.pathname.split("/")[2];
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -60,7 +64,7 @@ const Navbar = () => {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              <Write to="/write">Write <img className="write-img" src="../write.png" alt="" /></Write>
+              <Write to={`/write?draft= ${draftId} ?(draft) : null `}>Write <img className="write-img" src="../write.png" alt="" /></Write>
             </>
           ) : (
             <Login  to="/login">
