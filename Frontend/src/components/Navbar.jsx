@@ -7,13 +7,14 @@ import { CgProfile } from "react-icons/cg";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { IoSettingsOutline } from "react-icons/io5";
 import logo from "../assets/logo.png";
+import axios from "axios";
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
 
   const location = useLocation();
 
-  const draftId= location.pathname.split("/")[2];
-
+  const [draftId, setDraftId] = useState(null);
+  const [draftPost, setDraftPost] = useState({});
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -22,6 +23,21 @@ const Navbar = () => {
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
+  };
+
+  const fecthDraftPosts = async () => {
+    try {
+      const res = await axios.get(`http://localhost:9000/api/v1/draftposts`);
+
+      
+ 
+      setDraftPost(res.data.posts[0]);
+      console.log(res.data.posts[0]);
+      const newDraftId = res.data.posts[0].id;
+      setDraftId(newDraftId);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -53,9 +69,11 @@ const Navbar = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                <Profile  to={`/profile/${currentUser?.user.username}`}><Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
-                    <CgProfile size={20} /> Profile
-                  </Dropdown.Item></Profile>
+                  <Profile to={`/profile/${currentUser?.user.username}`}>
+                    <Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
+                      <CgProfile size={20} /> Profile
+                    </Dropdown.Item>
+                  </Profile>
                   <Dropdown.Item onClick={logout}>
                     <RiLogoutCircleRLine /> Logout
                   </Dropdown.Item>
@@ -64,15 +82,17 @@ const Navbar = () => {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              <Write to={`/write?draft= ${draftId} ?(draft) : null `}>Write <img className="write-img" src="../write.png" alt="" /></Write>
+              <Write
+                state={draftPost}
+                onClick={fecthDraftPosts}
+                to={`/write?draftPost=${draftId} `}
+              >
+                Write <img className="write-img" src="../write.png" alt="" />
+              </Write>
             </>
           ) : (
-            <Login  to="/login">
-              Login
-            </Login>
+            <Login to="/login">Login</Login>
           )}
-
-          
         </Menu>
         <MobileMenuIcon onClick={toggleMobileMenu}>&#9776;</MobileMenuIcon>
         {isMobileMenuOpen && (
@@ -100,40 +120,45 @@ const Navbar = () => {
             </MenuItem>
             {currentUser ? (
               <>
-              <Dropdown>
-                <Dropdown.Toggle
-                  className="link-profile"
-                  variant="success"
-                  id="dropdown-basic"
-                >
-                  {currentUser?.user.username}
-                </Dropdown.Toggle>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    className="link-profile"
+                    variant="success"
+                    id="dropdown-basic"
+                  >
+                    {currentUser?.user.username}
+                  </Dropdown.Toggle>
 
-                <Dropdown.Menu>
-                <Profile to={`/profile/${currentUser?.user.username}`}><Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
-                    <CgProfile size={20} /> Profile
-                  </Dropdown.Item></Profile>
-                  
-                  <Dropdown.Item onClick={logout}>
-                    <RiLogoutCircleRLine /> Logout
-                  </Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">
-                    <IoSettingsOutline /> Settings
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-              <Span>
-            <Write to="/write" onClick={closeMobileMenu}>Write <img className="write-img" src="../write.png" alt="" /></Write>
-            </Span>
+                  <Dropdown.Menu>
+                    <Profile to={`/profile/${currentUser?.user.username}`}>
+                      <Dropdown.Item
+                        href="#/action-1"
+                        onClick={closeMobileMenu}
+                      >
+                        <CgProfile size={20} /> Profile
+                      </Dropdown.Item>
+                    </Profile>
+
+                    <Dropdown.Item onClick={logout}>
+                      <RiLogoutCircleRLine /> Logout
+                    </Dropdown.Item>
+                    <Dropdown.Item href="#/action-3">
+                      <IoSettingsOutline /> Settings
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+                <Span>
+                  <Write to="/write" onClick={closeMobileMenu}>
+                    Write{" "}
+                    <img className="write-img" src="../write.png" alt="" />
+                  </Write>
+                </Span>
               </>
             ) : (
               <Span>
-                <Link  to="/login">
-                  Login
-                </Link>
+                <Link to="/login">Login</Link>
               </Span>
             )}
-           
           </MobileMenu>
         )}
       </div>
@@ -158,9 +183,13 @@ const NavBar = styled.div`
     height: 100%;
   }
   .link-profile {
-    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+    background: linear-gradient(
+      90deg,
+      rgba(131, 58, 180, 1) 0%,
+      rgba(253, 29, 29, 1) 50%,
+      rgba(252, 176, 69, 1) 100%
+    );
   }
-
 `;
 
 const Logo = styled.div`
@@ -196,8 +225,6 @@ const MobileMenuIcon = styled.div`
   color: white;
   display: none; /* Hide the mobile menu icon on larger screens */
 
-
-
   @media (max-width: 768px) {
     display: block; /* Show the mobile menu icon on small screens */
   }
@@ -213,8 +240,6 @@ const MobileMenuIcon = styled.div`
 
 const MobileMenu = styled.div`
   display: none; /* Hide the mobile menu on larger screens */
-
-
 
   @media (max-width: 768px) {
     display: flex;
@@ -279,7 +304,6 @@ const MenuItem = styled(Link)`
         transition: all 0.3s ease;
         text-decoration: underline;
         cursor: pointer;
-      
       }
     }
   }
@@ -315,7 +339,11 @@ const Write = styled(Link)`
   cursor: pointer;
   text-decoration: none;
   color: white;
-  background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(165,108,108,1) 100%);
+  background: linear-gradient(
+    0deg,
+    rgba(34, 193, 195, 1) 0%,
+    rgba(165, 108, 108, 1) 100%
+  );
   padding: 10px;
   border-radius: 50px;
   transition: all 0.3s ease;
@@ -331,13 +359,11 @@ const Write = styled(Link)`
 const Profile = styled(Link)`
   cursor: pointer;
   text-decoration: none;
-  color: white;   
+  color: white;
   border-radius: 50px;
   transition: all 0.3s ease;
-  width: 10%; 
-  `;
-
-
+  width: 10%;
+`;
 
 const Login = styled(Link)`
   font-size: 14px;
@@ -345,7 +371,12 @@ const Login = styled(Link)`
   text-decoration: none;
   font-weight: bolder;
   color: black;
-  background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(225,253,29,1) 50%, rgba(252,176,69,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(131, 58, 180, 1) 0%,
+    rgba(225, 253, 29, 1) 50%,
+    rgba(252, 176, 69, 1) 100%
+  );
   padding: 10px;
   border-radius: 5px;
   transition: all 0.3s ease;
