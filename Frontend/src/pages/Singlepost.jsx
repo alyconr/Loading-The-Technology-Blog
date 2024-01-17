@@ -9,7 +9,7 @@ import axios from "axios";
 import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-import avatar from "../assets/user.png";
+
 import dompurify from "dompurify";
 import { toast } from "react-toastify";
 import ApplauseButton from "../components/ClapCounter";
