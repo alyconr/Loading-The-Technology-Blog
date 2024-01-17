@@ -16,31 +16,35 @@ const Write = () => {
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState(location?.state?.category || "");
   const [draftSaved, setDraftSaved] = useState(false);
-
+  const [draftId, setDraftId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("useEffect tirggered");
     const saveDraftAutomatically = async () => {
-      console.log("saveDraftAutomatically called");
-      if (title && desc && cont && cat && file) {
+      if (title && desc && cont) {
         try {
-          await axios.post(
-            "http://localhost:9000/api/v1/draftposts",
-            {
+          const endpoit = draftId
+            ? `http://localhost:9000/api/v1/draftposts/${draftId}`
+            : "http://localhost:9000/api/v1/draftposts";
+
+          const response = await axios({
+            method: draftId ? "put" : "post",
+            url: endpoit,
+            data: {
               title,
               description: desc,
               content: cont,
               image: file ? file.name : "",
               category: cat,
             },
-            {
-              withCredentials: true,
-            }
-          );
+            withCredentials: true,
+          });
+
+          const newDraftId = response.data.post || draftId;
+          setDraftId(newDraftId);
           setDraftSaved(true);
           toast.info("Draft saved successfully", {
-            position: "bottom-right",
+            position: "bottom-center",
             autoClose: 2500,
             hideProgressBar: false,
             closeOnClick: true,
@@ -56,16 +60,15 @@ const Write = () => {
       }
     };
 
-    const debounceSaveDraft = debounced.debounced(saveDraftAutomatically, 1000);
+    const debounceSaveDraft = debounced.debounced(saveDraftAutomatically, 2000);
 
     // Listen for changes in title, desc, cont, cat, and file
     debounceSaveDraft();
 
     return () => {
-      console.log("useEffect cleanup called");
       debounced.cancel();
     };
-  }, [title, desc, cont, cat, file]);
+  }, [title, desc, cont]);
 
   const handleClick = async (e) => {
     e.preventDefault();
