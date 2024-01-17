@@ -10,16 +10,44 @@ import { debounced } from "../utils/debounce";
 
 const Write = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const draftParamId = new URLSearchParams(location.search).get("draftPost");
+  
+
   const [title, setTitle] = useState(location?.state?.title || "");
   const [desc, setDesc] = useState(location?.state?.description || "");
   const [cont, setCont] = useState(location?.state?.content || "");
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState(location?.state?.category || "");
   const [draftSaved, setDraftSaved] = useState(false);
-  const [draftId, setDraftId] = useState(null);
-  const navigate = useNavigate();
+  const [draftId, setDraftId] = useState(draftParamId);
 
   useEffect(() => {
+    const fetchData = async () => {
+      if (draftId) {
+        // Fetch the specific draft post based on draftId
+        try {
+          const response = await axios.get(`http://localhost:9000/api/v1/draftposts/${draftId}`);
+          const draftData = response.data.post;
+          setTitle(draftData.title || "");
+          setDesc(draftData.description || "");
+          setCont(draftData.content || "");
+          setCat(draftData.category || "");
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        // Fetch the latest draft post if no draftId
+        await fecthDraftPosts();
+      }
+    };
+
+    fetchData();
+  }, [draftId]);
+
+
+  useEffect(() => {
+        
     const saveDraftAutomatically = async () => {
       if (title && desc && cont) {
         try {
