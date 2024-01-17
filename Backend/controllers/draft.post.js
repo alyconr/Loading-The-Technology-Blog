@@ -110,8 +110,7 @@ const updateDraftPost = async (req, res) => {
 };
 
 const getSingleDraftPost = async (req, res) => {
-  const sql =
-    "SELECT * FROM posts_draft WHERE id = ?";
+  const sql = "SELECT * FROM posts_draft WHERE id = ?";
 
   const values = [req.params.id];
 
@@ -124,7 +123,12 @@ const getSingleDraftPost = async (req, res) => {
     } else {
       res.status(StatusCodes.OK).json({ post: results[0] });
     }
-  })
-}
+  });
+};
 
-module.exports = { getAllDraftPosts, createDraftPost, updateDraftPost, getSingleDraftPost }; // export getAllDraftPosts
+module.exports = {
+  getAllDraftPosts,
+  createDraftPost,
+  updateDraftPost,
+  getSingleDraftPost,
+}; // export getAllDraftPosts
