@@ -109,4 +109,22 @@ const updateDraftPost = async (req, res) => {
   });
 };
 
-module.exports = { getAllDraftPosts, createDraftPost, updateDraftPost }; // export getAllDraftPosts
+const getSingleDraftPost = async (req, res) => {
+  const sql =
+    "SELECT * FROM posts_draft WHERE id = ?";
+
+  const values = [req.params.id];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json({ post: results[0] });
+    }
+  })
+}
+
+module.exports = { getAllDraftPosts, createDraftPost, updateDraftPost, getSingleDraftPost }; // export getAllDraftPosts
