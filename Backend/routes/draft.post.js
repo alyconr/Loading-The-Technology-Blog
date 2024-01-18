@@ -6,10 +6,14 @@ const {
   createDraftPost,
   updateDraftPost,
   getSingleDraftPost,
-  deleteDraftPost
+  deleteDraftPost,
 } = require("../controllers/draft.post");
 
 router.route("/").get(getAllDraftPosts).post(createDraftPost);
-router.route("/:id").put(updateDraftPost).get(getSingleDraftPost).delete(deleteDraftPost);
+router
+  .route("/:id")
+  .put(updateDraftPost)
+  .get(getSingleDraftPost)
+  .delete(deleteDraftPost);
 
 module.exports = router;

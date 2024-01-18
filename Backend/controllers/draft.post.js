@@ -134,7 +134,7 @@ const deleteDraftPost = async (req, res) => {
     return res
       .status(StatusCodes.UNAUTHORIZED)
       .json({ error: "Unauthorized no token" });
-    }
+  }
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -156,16 +156,17 @@ const deleteDraftPost = async (req, res) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Database query error" });
     } else {
-      res.status(StatusCodes.OK).json({ message: "Draft Post deleted successfully" });
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Draft Post deleted successfully" });
     }
-  })
-  }
-
+  });
+};
 
 module.exports = {
   getAllDraftPosts,
   createDraftPost,
   updateDraftPost,
   getSingleDraftPost,
-  deleteDraftPost
+  deleteDraftPost,
 }; // export getAllDraftPosts
