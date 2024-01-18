@@ -52,11 +52,11 @@ const createPool = (url, caPath) => {
 
   // Add a keep-alive mechanism
   setInterval(() => {
-    pool.query("SELECT 1", (err, results) => {
+    pool.query("SELECT SUM(claps.applause_count) AS total_claps FROM claps", (err, results) => {
       if (err) {
-        console.error("Keep-alive query failed:", err);
+        console.error("MySQL query error:", err);
       } else {
-        console.log("Keep-alive query executed successfully");
+        console.log("Query results:", results);
       }
     });
   }, 360000); // check every 6 minutes
@@ -67,13 +67,7 @@ const createPool = (url, caPath) => {
 const pool = createPool(dbUrl, caPath);
 
 // Example query
-pool.query("SELECT SUM(claps.applause_count) AS total_claps FROM claps", (err, results) => {
-  if (err) {
-    console.error("MySQL query error:", err);
-  } else {
-    console.log("Query results:", results);
-  }
-});
+
 
 // Close the pool when the application is finished
 process.on("exit", () => {
