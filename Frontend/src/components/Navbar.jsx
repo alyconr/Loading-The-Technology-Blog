@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import Dropdown from "react-bootstrap/Dropdown";
 import { CgProfile } from "react-icons/cg";
@@ -10,7 +10,7 @@ import logo from "../assets/logo.png";
 import axios from "axios";
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const [draftId, setDraftId] = useState("");
   const [draftPost, setDraftPost] = useState({});
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -39,6 +39,11 @@ const Navbar = () => {
       console.log(err);
     }
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  }
 
   return (
     <NavBar>
@@ -74,7 +79,7 @@ const Navbar = () => {
                       <CgProfile size={20} /> Profile
                     </Dropdown.Item>
                   </Profile>
-                  <Dropdown.Item onClick={logout}>
+                   <Dropdown.Item onClick={handleLogout}>
                     <RiLogoutCircleRLine /> Logout
                   </Dropdown.Item>
                   <Dropdown.Item href="#/action-3">
