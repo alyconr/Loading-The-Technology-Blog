@@ -126,9 +126,46 @@ const getSingleDraftPost = async (req, res) => {
   });
 };
 
+const deleteDraftPost = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    // check if token exists
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Unauthorized no token" });
+    }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!decoded) {
+    // check if token is valid
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Unauthorized invalid token" });
+  }
+
+  const sql = "DELETE FROM posts_draft WHERE `id` = ?";
+
+  const values = [req.params.id];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json({ message: "Draft Post deleted successfully" });
+    }
+  })
+  }
+
+
 module.exports = {
   getAllDraftPosts,
   createDraftPost,
   updateDraftPost,
   getSingleDraftPost,
+  deleteDraftPost
 }; // export getAllDraftPosts
