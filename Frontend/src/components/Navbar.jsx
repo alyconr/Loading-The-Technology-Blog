@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import Dropdown from "react-bootstrap/Dropdown";
 import { CgProfile } from "react-icons/cg";
@@ -11,9 +11,7 @@ import axios from "axios";
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
 
-  const location = useLocation();
-
-  const [draftId, setDraftId] = useState(null);
+  const [draftId, setDraftId] = useState("");
   const [draftPost, setDraftPost] = useState({});
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -28,13 +26,15 @@ const Navbar = () => {
   const fecthDraftPosts = async () => {
     try {
       const res = await axios.get(`http://localhost:9000/api/v1/draftposts`);
-
-      
- 
-      setDraftPost(res.data.posts[0]);
-      console.log(res.data.posts[0]);
-      const newDraftId = res.data.posts[0].id;
-      setDraftId(newDraftId);
+      if (res.data.posts.length > 0) {
+        setDraftPost(res.data.posts[0]);
+        const newDraftId = res.data.posts[0].id;
+        setDraftId(newDraftId);
+      } else {
+        // Set default values or handle accordingly
+        setDraftPost({ id: 1 }); // Assuming 'id' is the property you want to set
+        setDraftId(1);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -85,7 +85,7 @@ const Navbar = () => {
               <Write
                 state={draftPost}
                 onClick={fecthDraftPosts}
-                to={`/write?draftPost=${draftId} `}
+                to={`/write?draftId=${draftId}`}
               >
                 Write <img className="write-img" src="../write.png" alt="" />
               </Write>
