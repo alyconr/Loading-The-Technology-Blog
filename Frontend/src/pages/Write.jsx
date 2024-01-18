@@ -11,8 +11,8 @@ import { debounced } from "../utils/debounce";
 const Write = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const draftParamId = new URLSearchParams(location.search).get("draftPost");
-  
+  const draftParamId = new URLSearchParams(location.search).get("draftId");
+  console.log(draftParamId);
 
   const [title, setTitle] = useState(location?.state?.title || "");
   const [desc, setDesc] = useState(location?.state?.description || "");
@@ -20,44 +20,45 @@ const Write = () => {
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState(location?.state?.category || "");
   const [draftSaved, setDraftSaved] = useState(false);
-  const [draftId, setDraftId] = useState(draftParamId);
+  const [draftId, setDraftId] = useState(draftParamId || "1");
 
   useEffect(() => {
     const fetchData = async () => {
-      if (draftId) {
-        // Fetch the specific draft post based on draftId
-        try {
-          const response = await axios.get(`http://localhost:9000/api/v1/draftposts/${draftId}`);
-          const draftData = response.data.post;
+      try {
+        const response = await axios.get(
+          `http://localhost:9000/api/v1/draftposts/${draftId}`
+        );
+        const draftData = response.data.post;
+        console.log(draftData);
+
+        if (draftData) {
           setTitle(draftData.title || "");
           setDesc(draftData.description || "");
           setCont(draftData.content || "");
           setCat(draftData.category || "");
-        } catch (err) {
-          console.log(err);
         }
-      } else {
-        // Fetch the latest draft post if no draftId
-        await fecthDraftPosts();
+      } catch (err) {
+        console.log(err);
       }
     };
 
-    fetchData();
-  }, [draftId]);
-
+    // Only fetch draft data when the component mounts
+    if (draftId === "1") {
+      fetchData();
+    }
+  }, []); // Empty dependency array ensures it runs only once on mount
 
   useEffect(() => {
-        
-    const saveDraftAutomatically = async () => {
+    const saveDraftAutomatically = async (e) => {
       if (title && desc && cont) {
         try {
-          const endpoit = draftId
-            ? `http://localhost:9000/api/v1/draftposts/${draftId}`
-            : "http://localhost:9000/api/v1/draftposts";
+          const endpoint = draftId
+            ? `http://localhost:9000/api/v1/draftposts/${draftId}` // Use the existing draftId for updates
+            : "http://localhost:9000/api/v1/draftposts"; // Create a new draft only if no draftId is present
 
           const response = await axios({
             method: draftId ? "put" : "post",
-            url: endpoit,
+            url: endpoint,
             data: {
               title,
               description: desc,
@@ -97,6 +98,27 @@ const Write = () => {
       debounced.cancel();
     };
   }, [title, desc, cont]);
+
+  const handleDeleteDraftPost = async () => {
+    try {
+      await axios.delete(`http://localhost:9000/api/v1/draftposts/${draftId}`, {
+        withCredentials: true,
+      });
+      navigate("/");
+      toast.info("Draft deleted successfully", {
+        position: "bottom-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -246,6 +268,7 @@ const Write = () => {
           <label className="input-file" htmlFor="file">
             Upload Image
           </label>
+          <button onClick={handleDeleteDraftPost}>Delete Draft</button>
           <h5>{file ? `Uploaded: ${file.name}` : ""}</h5>
           {file ? (
             <div className="actions">
@@ -338,6 +361,18 @@ const Wrapper = styled.div`
   gap: 2rem;
   margin: 1rem;
 
+  button {
+    width: 50%;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+
   @media only screen and (max-width: 768px) {
     flex-direction: column;
     margin: 0 auto;
@@ -419,6 +454,7 @@ const Wrapper = styled.div`
         font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease-in-out;
+        text-align: center;
       }
     }
 
