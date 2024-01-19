@@ -1,15 +1,23 @@
 import styled from "styled-components";
 import { Link, useLocation } from "react-router-dom";
 import useFetch from "../utils/useFetch";
+import React, { useEffect } from "react";
 
 const Home = () => {
   const category = useLocation().search;
+  console.log(category);
 
+  const shouldFetchAllPosts = !category;
   const {
     data: posts,
     loading,
     error,
-  } = useFetch(`http://localhost:9000/api/v1/posts${category}`);
+  } = useFetch(
+    shouldFetchAllPosts
+      ? "http://localhost:9000/api/v1/posts"
+      : `http://localhost:9000/api/v1/posts${category}`
+  );
+  useEffect(() => {}, []);
 
   return (
     <Wrapper>
@@ -30,7 +38,6 @@ const Home = () => {
                   </PostLink>
                   <h3>{post.description}</h3>
                   <Link to={`/singlepost/${post.id}`}>
-                    {" "}
                     <Button>Read More</Button>
                   </Link>
                 </div>
