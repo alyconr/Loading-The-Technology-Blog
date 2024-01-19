@@ -43,7 +43,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     navigate("/");
-  }
+  };
 
   return (
     <NavBar>
@@ -56,12 +56,56 @@ const Navbar = () => {
 
         <Menu>
           <MenuItem to="/">Home</MenuItem>
-          <MenuItem to="/?category=Javascript">Javascript</MenuItem>
-          <MenuItem to="/?category=CSS">CSS</MenuItem>
-          <MenuItem to="/?category=React">React</MenuItem>
-          <MenuItem to="/?category=Node">Node</MenuItem>
-          <MenuItem to="/?category=Python">Python</MenuItem>
-          <MenuItem to="/?category=Docker">Docker</MenuItem>
+          <Dropdown>
+            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+              Web Development
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="bg-secondary">
+              <Dropdown.Item>
+                <MenuItem to="/?category=Javascript">Javascript</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=CSS">CSS</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=React">React</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=Node">Node</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=Python">Python</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item></Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown>
+            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+              DevOps
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="bg-secondary">
+              <Dropdown.Item>
+                <MenuItem to="/?category=Docker">Docker</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=CSS">CSS</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=React">React</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=Node">Node</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=Python">Python</MenuItem>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <MenuItem to="/?category=Docker">Docker</MenuItem>
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
           {currentUser ? (
             <>
               <Dropdown>
@@ -79,7 +123,7 @@ const Navbar = () => {
                       <CgProfile size={20} /> Profile
                     </Dropdown.Item>
                   </Profile>
-                   <Dropdown.Item onClick={handleLogout}>
+                  <Dropdown.Item onClick={handleLogout}>
                     <RiLogoutCircleRLine /> Logout
                   </Dropdown.Item>
                   <Dropdown.Item href="#/action-3">
@@ -105,24 +149,71 @@ const Navbar = () => {
             <MenuItem to="/" onClick={closeMobileMenu}>
               Home
             </MenuItem>
-            <MenuItem to="/?category=Javascript" onClick={closeMobileMenu}>
-              Javascript
-            </MenuItem>
-            <MenuItem to="/?category=CSS" onClick={closeMobileMenu}>
-              CSS
-            </MenuItem>
-            <MenuItem to="/?category=React" onClick={closeMobileMenu}>
-              React
-            </MenuItem>
-            <MenuItem to="/?category=Node" onClick={closeMobileMenu}>
-              Node
-            </MenuItem>
-            <MenuItem to="/?category=Python" onClick={closeMobileMenu}>
-              Python
-            </MenuItem>
-            <MenuItem to="/?category=Docker" onClick={closeMobileMenu}>
-              Docker
-            </MenuItem>
+            <Dropdown>
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                Web Development
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="bg-secondary">
+                <Dropdown.Item>
+                  <MenuItem
+                    to="/?category=Javascript"
+                    onClick={closeMobileMenu}
+                  >
+                    Javascript
+                  </MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=CSS" onClick={closeMobileMenu}>
+                    CSS
+                  </MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=React" onClick={closeMobileMenu}>
+                    React
+                  </MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=Node" onClick={closeMobileMenu}>
+                    Node
+                  </MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=Python" onClick={closeMobileMenu}>
+                    Python
+                  </MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item></Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown>
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                DevOps
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu className="bg-secondary">
+                <Dropdown.Item>
+                  <MenuItem to="/?category=Docker" onClick={closeMobileMenu}>
+                    Docker
+                  </MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=CSS">CSS</MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=React">React</MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=Node">Node</MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=Python">Python</MenuItem>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <MenuItem to="/?category=Docker">Docker</MenuItem>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
             {currentUser ? (
               <>
                 <Dropdown>
@@ -213,7 +304,7 @@ const Menu = styled.div`
   display: flex;
   flex: 1;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   @media (max-width: 768px) {
     display: none; /* Hide the regular menu on small screens */
@@ -255,6 +346,7 @@ const MobileMenu = styled.div`
     left: 0;
     width: 100%;
     background-color: #342e2e;
+    gap: 10px;
   }
 
   @media (max-width: 820px) {
@@ -265,6 +357,7 @@ const MobileMenu = styled.div`
     left: 0;
     width: 100%;
     background-color: #342e2e;
+    gap: 10px;
   }
 `;
 
