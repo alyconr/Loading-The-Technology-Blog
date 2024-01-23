@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 
 const Home = () => {
   const category = useLocation().search;
-  console.log(category);
+
 
   const shouldFetchAllPosts = !category;
   const {
