@@ -435,11 +435,13 @@ const Wrapper = styled.div`
       border-radius: 5px;
       padding: 1rem;
       flex: 1;
-      background: linear-gradient(
-        90deg,
-        rgba(2, 0, 36, 1) 0%,
-        rgba(9, 9, 121, 1) 35%,
-        rgba(0, 212, 255, 1) 100%
+      background-image: linear-gradient(
+        to right bottom,
+        #1085ae,
+        #008795,
+        #008470,
+        #487e4a,
+        #6e732e
       );
       color: #fff;
 
