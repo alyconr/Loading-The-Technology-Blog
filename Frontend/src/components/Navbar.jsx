@@ -125,6 +125,9 @@ const Navbar = () => {
               >
                 Write <img className="write-img" src="../write.png" alt="" />
               </Write>
+              <ImageProfile>
+                  <img src={`../upload/${currentUser.user.image}`} alt="" />
+              </ImageProfile>
             </>
           ) : (
             <Login to="/login">Login</Login>
@@ -221,7 +224,7 @@ const NavBar = styled.div`
   top: 0;
   z-index: 999;
   .container {
-    padding: 0px 50px;
+    padding: 0px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -412,6 +415,17 @@ const Profile = styled(Link)`
   width: 10%;
 `;
 
+
+const ImageProfile = styled.div`
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+`;
 const Login = styled(Link)`
   font-size: 14px;
   cursor: pointer;
