@@ -25,8 +25,7 @@ const Write = () => {
     const fetchData = async () => {
       try {
         const storedDraftId = localStorage.getItem("draftId");
-        console.log(storedDraftId);   
-            
+        console.log(storedDraftId);
 
         const response = await axios.get(
           `http://localhost:9000/api/v1/draftposts/${storedDraftId}`
@@ -295,69 +294,58 @@ const Write = () => {
           <Category>
             <input
               type="radio"
-              checked={cat === "Javascript"}
+              checked={cat === "Web-Development"}
               name="cat"
-              value="Javascript"
-              id="javascript"
+              value="Web-Development"
+              id="Web-Development"
               onChange={(e) => setCat(e.target.value)}
             />
-            <label htmlFor="javascript"> Javascript </label>
+            <label htmlFor="Web-Development"> Web-Development </label>
           </Category>
           <Category>
             <input
               type="radio"
               name="cat"
-              checked={cat === "CSS"}
-              value="CSS"
-              id="css"
+              checked={cat === "Cloud-Computing"}
+              value="Cloud-Computing"
+              id="Cloud-Computing"
               onChange={(e) => setCat(e.target.value)}
             />
-            <label htmlFor="css"> CSS </label>
+            <label htmlFor="Cloud-Computing"> Cloud-Computing</label>
           </Category>
           <Category>
             <input
               type="radio"
               name="cat"
-              checked={cat === "React"}
-              value="React"
-              id="react"
+              checked={cat === "DevOps"}
+              value="DevOps"
+              id="DevOps"
               onChange={(e) => setCat(e.target.value)}
             />
-            <label htmlFor="react"> React </label>
+            <label htmlFor="DevOps"> DevOps </label>
           </Category>
           <Category>
             {" "}
             <input
               type="radio"
               name="cat"
-              checked={cat === "Node"}
-              value="Node"
-              id="node"
+              checked={cat === "Security"}
+              value="Security"
+              id="Security"
               onChange={(e) => setCat(e.target.value)}
             />
-            <label htmlFor="node"> Node </label>
+            <label htmlFor="Security"> Security</label>
           </Category>
           <Category>
             <input
               type="radio"
               name="cat"
-              checked={cat === "Python"}
-              value="Python"
-              id="python"
+              checked={cat === "Linux"}
+              value="Linux"
+              id="Linux"
               onChange={(e) => setCat(e.target.value)}
             />
-            <label htmlFor="python"> Python </label>
-          </Category>
-          <Category>
-            <input
-              type="radio"
-              name="cat"
-              checked={cat === "Docker"}
-              value="Docker"
-              id="docker"
-              onChange={(e) => setCat(e.target.value)}
-            />
-            <label htmlFor="docker"> Docker </label>
+            <label htmlFor="Linux"> Linux </label>
           </Category>
         </div>
       </div>
