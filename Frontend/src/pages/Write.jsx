@@ -12,7 +12,6 @@ const Write = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const draftParamId = new URLSearchParams(location.search).get("draftId");
-  console.log(draftParamId);
 
   const [title, setTitle] = useState(location?.state?.title || "");
   const [desc, setDesc] = useState(location?.state?.description || "");
@@ -20,13 +19,17 @@ const Write = () => {
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState(location?.state?.category || "");
   const [draftSaved, setDraftSaved] = useState(false);
-  const [draftId, setDraftId] = useState(draftParamId || "1");
+  const [draftId, setDraftId] = useState(draftParamId);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const storedDraftId = localStorage.getItem("draftId");
+        console.log(storedDraftId);   
+            
+
         const response = await axios.get(
-          `http://localhost:9000/api/v1/draftposts/${draftId}`
+          `http://localhost:9000/api/v1/draftposts/${storedDraftId}`
         );
         const draftData = response.data.post;
         console.log(draftData);
@@ -43,13 +46,12 @@ const Write = () => {
     };
 
     // Only fetch draft data when the component mounts
-    if (draftId === "1") {
-      fetchData();
-    }
-  }, []); // Empty dependency array ensures it runs only once on mount
+
+    fetchData();
+  }, [draftId]);
 
   useEffect(() => {
-    const saveDraftAutomatically = async (e) => {
+    const saveDraftAutomatically = async () => {
       if (title && desc && cont) {
         try {
           const endpoint = draftId
@@ -101,9 +103,18 @@ const Write = () => {
 
   const handleDeleteDraftPost = async () => {
     try {
+      // Delete the draftId from localStorage
+      localStorage.removeItem("draftId");
+
+      // Set the state to null or an appropriate value
+      setDraftId(null);
+
       await axios.delete(`http://localhost:9000/api/v1/draftposts/${draftId}`, {
         withCredentials: true,
       });
+      setTitle("");
+      setDesc("");
+      setCont("");
       navigate("/");
       toast.info("Draft deleted successfully", {
         position: "bottom-right",
