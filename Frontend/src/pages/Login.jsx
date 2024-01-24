@@ -129,11 +129,13 @@ const Container = styled.div`
   height: 80vh;
   width: 35vw;
   margin: 50px auto;
-  background: linear-gradient(
-    90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 9, 121, 1) 35%,
-    rgba(0, 212, 255, 1) 100%
+  background-image: linear-gradient(
+    to top,
+    #a5acd1,
+    #9fb8d9,
+    #9dc3dd,
+    #a0cede,
+    #a8d7dd
   );
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -165,7 +167,8 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-size: 50px;
-  color: #fff;
+  color: #415be3;
+  font-weight: bold;
 `;
 
 const Form = styled.form`
@@ -218,7 +221,14 @@ const Button = styled.button`
   border: none;
   border-radius: 10px;
   font-size: 16px;
-  background-color: #007bff;
+  background-image: radial-gradient(
+    circle,
+    #5d88a5,
+    #5485a8,
+    #4b82ab,
+    #417fae,
+    #387cb1
+  );
   color: #fff;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -245,7 +255,7 @@ const Button = styled.button`
 `;
 
 const Span = styled.span`
-  color: #fff;
+  color: #0b1442;
   font-size: 16px;
   margin-top: 10px;
 
