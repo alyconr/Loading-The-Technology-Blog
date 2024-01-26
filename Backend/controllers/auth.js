@@ -1,9 +1,17 @@
 require("dotenv").config();
 const { StatusCodes } = require("http-status-codes");
-
 const pool = require("../db/connect");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+
+const generateResetToken = () => {
+  const token = crypto.randomBytes(32).toString("hex");
+  const experiesAt = new Date();
+  experiesAt.setHours(experiesAt.getHours() + 1); // expires in 1 hour
+  return { token, experiesAt };
+};
+
 const register = async (req, res) => {
   const sql =
     "SELECT * FROM users WHERE  fullname=? or username = ? or email = ?  ";
@@ -76,6 +84,86 @@ const register = async (req, res) => {
   );
 };
 
+const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  const { token, experiesAt } = generateResetToken();
+
+  const updateTokenSql =
+    "UPDATE users SET reset_token = ?, reset_token_expires_at = ? WHERE email = ?";
+
+  pool.query(
+    updateTokenSql,
+    [token, experiesAt, email],
+    (queryError, results) => {
+      if (queryError) {
+        console.error("Database query error:", queryError);
+      }
+
+      res.status(StatusCodes.OK).json({
+        message: "Password reset token sent to your email",
+        token,
+        experiesAt,
+      });
+    }
+  );
+};
+
+
+const resetPassword = async (req, res) => {
+  try {
+    const { email, password, token } = req.body;
+
+    // Check if the email and password are provided
+    if (!email || !password || !token) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        error: "Email, password, and reset token are required",
+      });
+    }
+
+    // Check if the reset token is valid
+    const checkTokenSql =
+      "SELECT * FROM users WHERE email = ? AND reset_token = ? AND reset_token_expires_at > NOW()";
+      
+  console.log("Query:", checkTokenSql, [email, token]);
+
+    pool.query(checkTokenSql, [email, token],  (queryError, results) => {
+      if (queryError) {
+        console.error("Database query error:", queryError);
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: "Database query error" });
+      }
+
+      if (results.length === 0) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ error: "Invalid or expired reset token" });
+      }
+
+      // Hash the new password
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      // Update the user's password and clear the reset token
+      const updatePasswordSql =
+        "UPDATE users SET password = ?, reset_token = NULL, reset_token_expires_at = NULL WHERE email = ?";
+
+     pool.query(updatePasswordSql, [hashedPassword, email]);
+
+      res.status(StatusCodes.OK).json({
+        message: "Password reset successfully",
+      });
+    });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      error: "Internal server error while resetting the password",
+    });
+  }
+};
+
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -102,7 +190,7 @@ const login = async (req, res) => {
     }
     const user = results[0];
 
-    if (bcrypt.compareSync(password, user.password)) {
+    if (!bcrypt.compareSync(password, user.password)) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
         .json({ error: "Invalid password" });
@@ -157,4 +245,6 @@ module.exports = {
   register,
   login,
   logout,
+  requestPasswordReset,
+  resetPassword,
 };
