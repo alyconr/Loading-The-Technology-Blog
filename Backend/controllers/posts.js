@@ -27,6 +27,8 @@ const getSinglePost = async (req, res) => {
   const sql =
     "SELECT posts.id, `fullname`, `username`,  `title`, `description`,  posts.image, users.image AS userImage, `content`, `date`, `category` FROM users JOIN posts ON users.id = posts.uid WHERE posts.id = ?";
 
+    console
+
   const values = [req.params.id];
 
   pool.query(sql, values, (queryError, results) => {
