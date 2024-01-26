@@ -10,6 +10,8 @@ const createPool = (url, caPath) => {
     ssl: {
       ca: fs.readFileSync(caPath),
     },
+    timezone: "Z"
+
   };
 
   delete connectionConfig.maxPacketSize;
