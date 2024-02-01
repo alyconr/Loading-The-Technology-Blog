@@ -104,6 +104,10 @@ const Login = () => {
             Don't have an account?
             <Styledlink to="/register">Register</Styledlink>
           </Span>
+          <Span>
+            Forgot your password?
+            <Styledlink to="/reset-password">Reset Password</Styledlink>
+          </Span>
           <ErrorMessage>{errors.email}</ErrorMessage>
           <ErrorMessage>{errors.password}</ErrorMessage>
         </Form>
