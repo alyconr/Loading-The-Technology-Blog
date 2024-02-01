@@ -176,6 +176,16 @@ const resetPassword = async (req, res) => {
           .json({ error: "Invalid or expired reset token" });
       }
 
+
+      const passwordRegex =
+        /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+      if (!passwordRegex.test(password)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          error: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+        })
+      }
+
       // Hash the new password
       const salt = bcrypt.genSaltSync(10);
       const hashedPassword = bcrypt.hashSync(password, salt);
