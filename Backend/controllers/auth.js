@@ -4,6 +4,8 @@ const pool = require("../db/connect");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
 
 const generateResetToken = () => {
   const token = crypto.randomBytes(32).toString("hex");
@@ -98,12 +100,45 @@ const requestPasswordReset = async (req, res) => {
     (queryError, results) => {
       if (queryError) {
         console.error("Database query error:", queryError);
+        return res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: "Database query error" });
       }
 
-      res.status(StatusCodes.OK).json({
-        message: "Password reset token sent to your email",
-        token,
-        experiesAt,
+      // Send the reset token to the user's email
+
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.PASSWORD,
+        },
+      });
+
+      const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+
+      const mailOptions = {
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Password Reset",
+        html: `<p>Please click the following link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ error: "Error sending email" });
+        }
+
+        console.log("Email sent:", info.response);
+        res
+          .status(StatusCodes.OK)
+          .json({ message: "Password reset link sent successfully" });
       });
     }
   );
@@ -124,10 +159,10 @@ const resetPassword = async (req, res) => {
     // Check if the reset token is valid
     const checkTokenSql =
       "SELECT * FROM users WHERE email = ? AND reset_token = ? AND reset_token_expires_at > NOW()";
-      
-  console.log("Query:", checkTokenSql, [email, token]);
 
-    pool.query(checkTokenSql, [email, token],  (queryError, results) => {
+    console.log("Query:", checkTokenSql, [email, token]);
+
+    pool.query(checkTokenSql, [email, token], (queryError, results) => {
       if (queryError) {
         console.error("Database query error:", queryError);
         return res
@@ -149,7 +184,7 @@ const resetPassword = async (req, res) => {
       const updatePasswordSql =
         "UPDATE users SET password = ?, reset_token = NULL, reset_token_expires_at = NULL WHERE email = ?";
 
-     pool.query(updatePasswordSql, [hashedPassword, email]);
+      pool.query(updatePasswordSql, [hashedPassword, email]);
 
       res.status(StatusCodes.OK).json({
         message: "Password reset successfully",
@@ -162,7 +197,6 @@ const resetPassword = async (req, res) => {
     });
   }
 };
-
 
 const login = async (req, res) => {
   const { email, password } = req.body;
