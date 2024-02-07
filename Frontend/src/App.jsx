@@ -18,6 +18,8 @@ import GlobalStyles from "./GlobalStyles";
 import Hero from "./components/Hero";
 import Profile from "./pages/Profile";
 import Userposts from "./pages/Userposts";
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/forgotPassword";
 
 const Layout = () => {
   const location = useLocation();
@@ -71,6 +73,14 @@ const Router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
+  }
 ]);
 
 function App() {
