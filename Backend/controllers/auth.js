@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
-
 const generateResetToken = () => {
   const token = crypto.randomBytes(32).toString("hex");
   const experiesAt = new Date();
@@ -91,59 +90,82 @@ const requestPasswordReset = async (req, res) => {
 
   const { token, experiesAt } = generateResetToken();
 
-  const updateTokenSql =
-    "UPDATE users SET reset_token = ?, reset_token_expires_at = ? WHERE email = ?";
+  const sql = "SELECT * FROM users WHERE email = ?";
 
-  pool.query(
-    updateTokenSql,
-    [token, experiesAt, email],
-    (queryError, results) => {
-      if (queryError) {
-        console.error("Database query error:", queryError);
-        return res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: "Database query error" });
-      }
+  if (!email) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      error: "Email is required",
+    });
+  }
 
-      // Send the reset token to the user's email
+  pool.query(sql, [email], (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
 
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.EMAIL,
-          pass: process.env.PASSWORD,
-        },
-      });
-
-      const resetLink = `http://localhost:5173/reset-password?token=${token}`;
-
-      const mailOptions = {
-        from: process.env.EMAIL,
-        to: email,
-        subject: "Password Reset",
-        html: `<p>Please click the following link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`,
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error("Error sending email:", error);
-          return res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
-            .json({ error: "Error sending email" });
-        }
-
-        console.log("Email sent:", info.response);
-        res
-          .status(StatusCodes.OK)
-          .json({ message: "Password reset link sent successfully" });
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        error: "An internal server error occurred. Please try again later.",
       });
     }
-  );
-};
 
+    if (results.length === 0) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ error: "User's email not found" });
+    }
+
+    const updateTokenSql =
+      "UPDATE users SET reset_token = ?, reset_token_expires_at = ? WHERE email = ?";
+
+    pool.query(
+      updateTokenSql,
+      [token, experiesAt, email],
+      (queryError, results) => {
+        if (queryError) {
+          console.error("Database query error:", queryError);
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ error: "Database query error" });
+        }
+
+        // Send the reset token to the user's email
+
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASSWORD,
+          },
+        });
+
+        const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+
+        const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Password Reset",
+          html: `<p>Please click the following link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.error("Error sending email:", error);
+            return res
+              .status(StatusCodes.INTERNAL_SERVER_ERROR)
+              .json({ error: "Error sending email" });
+          }
+
+          console.log("Email sent:", info.response);
+          res
+            .status(StatusCodes.OK)
+            .json({ message: "Password reset link sent successfully" });
+        });
+      }
+    );
+  });
+};
 
 const resetPassword = async (req, res) => {
   try {
@@ -156,48 +178,77 @@ const resetPassword = async (req, res) => {
       });
     }
 
-    // Check if the reset token is valid
-    const checkTokenSql =
-      "SELECT * FROM users WHERE email = ? AND reset_token = ? AND reset_token_expires_at > NOW()";
+    // check if email exists in database
+    const emailCheckSql = "SELECT * FROM users WHERE email = ?";
 
-    console.log("Query:", checkTokenSql, [email, token]);
-
-    pool.query(checkTokenSql, [email, token], (queryError, results) => {
+    pool.query(emailCheckSql, [email], (queryError, results) => {
       if (queryError) {
         console.error("Database query error:", queryError);
-        return res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: "Database query error" });
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          error: "An internal server error occurred. Please try again later.",
+        });
       }
 
       if (results.length === 0) {
         return res
-          .status(StatusCodes.BAD_REQUEST)
-          .json({ error: "Invalid or expired reset token" });
+          .status(StatusCodes.NOT_FOUND)
+          .json({ error: "User's email not found" });
       }
 
+      // Check if the reset token is valid
+      const checkTokenSql =
+        "SELECT * FROM users WHERE email = ? AND reset_token = ? AND reset_token_expires_at > NOW()";
 
-      const passwordRegex =
-        /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+      console.log("Query:", checkTokenSql, [email, token]);
 
-      if (!passwordRegex.test(password)) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          error: "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-        })
-      }
+      pool.query(checkTokenSql, [email, token], (queryError, results) => {
+        if (queryError) {
+          console.error("Database query error:", queryError);
+          return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json({ error: "Database query error" });
+        }
 
-      // Hash the new password
-      const salt = bcrypt.genSaltSync(10);
-      const hashedPassword = bcrypt.hashSync(password, salt);
+        if (results.length === 0) {
+          return res
+            .status(StatusCodes.BAD_REQUEST)
+            .json({ error: "Invalid or expired reset token" });
+        }
 
-      // Update the user's password and clear the reset token
-      const updatePasswordSql =
-        "UPDATE users SET password = ?, reset_token = NULL, reset_token_expires_at = NULL WHERE email = ?";
+        const passwordRegex =
+          /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
-      pool.query(updatePasswordSql, [hashedPassword, email]);
+        if (!passwordRegex.test(password)) {
+          return res.status(StatusCodes.UNAUTHORIZED).json({
+            error:
+              "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+          });
+        }
 
-      res.status(StatusCodes.OK).json({
-        message: "Password reset successfully",
+        // Hash the new password
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPassword = bcrypt.hashSync(password, salt);
+
+        // Update the user's password and clear the reset token
+        const updatePasswordSql =
+          "UPDATE users SET password = ?, reset_token = NULL, reset_token_expires_at = NULL WHERE email = ?";
+
+        pool.query(
+          updatePasswordSql,
+          [hashedPassword, email],
+          (updateError, updateResults) => {
+            if (updateError) {
+              console.error("Database update error:", updateError);
+              return res
+                .status(StatusCodes.INTERNAL_SERVER_ERROR)
+                .json({ error: "Database update error" });
+            }
+
+            return res.status(StatusCodes.OK).json({
+              message: "Password reset successfully",
+            });
+          }
+        );
       });
     });
   } catch (error) {
