@@ -106,7 +106,7 @@ const Login = () => {
           </Span>
           <Span>
             Forgot your password?
-            <Styledlink to="/reset-password">Reset Password</Styledlink>
+            <Styledlink to="/forgot-password">Reset Password</Styledlink>
           </Span>
           <ErrorMessage>{errors.email}</ErrorMessage>
           <ErrorMessage>{errors.password}</ErrorMessage>
