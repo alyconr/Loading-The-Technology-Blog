@@ -81,7 +81,7 @@ const ResetPassword = () => {
           }
         );
         toast.success("Password reset successfully", {
-          position: "bottom-right",
+          position: "bottom-center",
           autoClose: 2500,
           hideProgressBar: false,
           closeOnClick: true,

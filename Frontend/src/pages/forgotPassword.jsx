@@ -32,7 +32,7 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+   
     if (validateInputs()) {
       try {
         await axios.post(
@@ -41,10 +41,11 @@ const ForgotPassword = () => {
             email: inputs.email,
           }
         );
+        navigate("/");
 
         toast.success("Password reset link sent to your email", {
-          position: "bottom-right",
-          autoClose: 2500,
+          position: "bottom-center",
+          autoClose: 3500,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -52,8 +53,6 @@ const ForgotPassword = () => {
           progress: undefined,
           theme: "dark",
         });
-
-        navigate("/login");
       } catch (err) {
         console.log(err);
 
