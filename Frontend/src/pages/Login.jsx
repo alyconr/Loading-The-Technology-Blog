@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import { toast } from "react-toastify";
-
+import { MdVisibilityOff } from "react-icons/md";
 const Login = () => {
   const [inputs, setInputs] = useState({
     email: "",
@@ -16,6 +16,8 @@ const Login = () => {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
 
   const { login } = useContext(AuthContext);
@@ -23,6 +25,10 @@ const Login = () => {
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const toggelShowPassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   const validateInputs = () => {
@@ -83,20 +89,31 @@ const Login = () => {
         <Form>
           <Input
             type="email"
-            placeholder="email"
+            placeholder="Email"
             name="email"
             onChange={handleChange}
             value={inputs.email}
             autoComplete="email"
+            className="ps-3"
           />
-          <Input
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={handleChange}
-            value={inputs.password}
-            autoComplete="current-password"
-          />
+          <Inputpassword>
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              name="password"
+              onChange={handleChange}
+              value={inputs.password}
+              autoComplete="current-password"
+            />
+
+            <MdVisibilityOff
+              size={40}
+              color="gray"
+              style={{ cursor: "pointer", paddingRight: "10px" }}
+              onClick={toggelShowPassword}
+            />
+          </Inputpassword>
+
           <Button onClick={handleSubmit} type="submit">
             Login
           </Button>
@@ -120,7 +137,7 @@ export default Login;
 
 const ErrorMessage = styled.p`
   color: red;
-  font-size: 14px;
+  font-size: 20px;
   margin-top: 5px;
   text-align: center;
 `;
@@ -146,7 +163,7 @@ const Container = styled.div`
 
   @media (max-width: 1024px) {
     width: 70vw;
-    height: 40vh;
+    height: 50vh;
     margin: 30px auto;
   }
 
@@ -181,13 +198,38 @@ const Form = styled.form`
   align-items: center;
   justify-content: center;
 `;
+const Inputpassword = styled.div`
+  display: flex;
+  align-items: center;
+  width: 300px;
+  height: 40px;
+  margin: 10px;
+  background-color: white;
+  border-radius: 10px;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #ccc;
+  }
+
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 30px;
+    font-size: 12px;
+    margin: 5px;
+    padding: 5px;
+  }
+`;
 
 const Input = styled.input`
   width: 300px;
   height: 40px;
   margin: 10px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 10px;
   font-size: 16px;
 
