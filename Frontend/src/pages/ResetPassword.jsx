@@ -6,6 +6,7 @@ import { AuthContext } from "../context/authContext";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
+import { MdVisibilityOff } from "react-icons/md";
 
 const ResetPassword = () => {
   const location = useLocation();
@@ -26,6 +27,8 @@ const ResetPassword = () => {
 
   const [showPasswordErrorModal, setShowPasswordErrorModal] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleClose = () => {
     setShowPasswordErrorModal(false);
   };
@@ -35,6 +38,10 @@ const ResetPassword = () => {
   const handleChange = (e) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const toggelShowPassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   const validateInputs = () => {
@@ -74,7 +81,6 @@ const ResetPassword = () => {
             credentials: "include",
           }
         );
-        navigate("/login");
         toast.success("Password reset successfully", {
           position: "bottom-right",
           autoClose: 2500,
@@ -85,6 +91,8 @@ const ResetPassword = () => {
           progress: undefined,
           theme: "dark",
         });
+
+        navigate("/login");
       } catch (err) {
         console.log(err);
 
@@ -132,20 +140,29 @@ const ResetPassword = () => {
         <Form>
           <Input
             type="email"
-            placeholder="email"
+            placeholder="Email"
             name="email"
             onChange={handleChange}
             value={inputs.email}
             autoComplete="email"
           />
-          <Input
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={handleChange}
-            value={inputs.password}
-            autoComplete="current-password"
-          />
+          <Inputpassword>
+            <Input
+              type="password"
+              placeholder="Password"
+              name="password"
+              onChange={handleChange}
+              value={inputs.password}
+              autoComplete="current-password"
+            />
+            <MdVisibilityOff
+              size={40}
+              color="gray"
+              style={{ cursor: "pointer", paddingRight: "10px" }}
+              onClick={toggelShowPassword}
+            />
+          </Inputpassword>
+
           <ButtonSubmit onClick={handleSubmit} type="submit">
             Reset
           </ButtonSubmit>
@@ -235,7 +252,7 @@ const Container = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 50px;
+  font-size: 30px;
   color: #415be3;
   font-weight: bold;
 `;
@@ -247,12 +264,38 @@ const Form = styled.form`
   justify-content: center;
 `;
 
+const Inputpassword = styled.div`
+  display: flex;
+  align-items: center;
+  width: 300px;
+  height: 40px;
+  margin: 10px;
+  background-color: white;
+  border-radius: 10px;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #ccc;
+  }
+
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 30px;
+    font-size: 12px;
+    margin: 5px;
+    padding: 5px;
+  }
+`;
+
 const Input = styled.input`
   width: 300px;
   height: 40px;
   margin: 10px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 10px;
   font-size: 16px;
 
