@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import GlobalStyles from "./../GlobalStyles";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
-import { AuthContext } from "../context/authContext";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
@@ -148,7 +147,7 @@ const ResetPassword = () => {
           />
           <Inputpassword>
             <Input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Password"
               name="password"
               onChange={handleChange}
@@ -202,8 +201,8 @@ export default ResetPassword;
 
 const ErrorMessage = styled.p`
   color: red;
-  font-size: 14px;
-  margin-top: 5px;
+  font-size: 18px;
+  margin-top: 10px;
   text-align: center;
 `;
 
@@ -228,7 +227,7 @@ const Container = styled.div`
 
   @media (max-width: 1024px) {
     width: 70vw;
-    height: 40vh;
+    height: 50vh;
     margin: 30px auto;
   }
 
