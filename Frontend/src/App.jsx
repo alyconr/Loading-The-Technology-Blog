@@ -3,7 +3,10 @@ import {
   RouterProvider,
   Outlet,
   useLocation,
+  Navigate,
 } from "react-router-dom";
+import { AuthContext } from "./context/authContext";
+import { useContext } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Register from "./pages/Register";
@@ -28,14 +31,20 @@ const Layout = () => {
 
   return (
     <>
-      <ToastContainer />
       <GlobalStyles />
+      <ToastContainer />
       <Navbar />
       {isHome && !category && <Hero />}
       <Outlet />
       <Footer />
     </>
   );
+};
+
+const PrivateRoute = ({ element }) => {
+  const { currentUser } = useContext(AuthContext);
+
+  return currentUser ? element : <Navigate to="/login" />;
 };
 
 const Router = createBrowserRouter([
@@ -49,7 +58,7 @@ const Router = createBrowserRouter([
       },
       {
         path: "/write",
-        element: <Write />,
+        element: <PrivateRoute element={<Write />} />,
       },
       {
         path: "/singlepost/:id",
@@ -63,16 +72,17 @@ const Router = createBrowserRouter([
         path: "/profile/:username/posts",
         element: <Userposts />,
       },
+      {
+        path: "/login",
+        element: <Login />,
+      },
     ],
   },
   {
     path: "/register",
     element: <Register />,
   },
-  {
-    path: "/login",
-    element: <Login />,
-  },
+
   {
     path: "/forgot-password",
     element: <ForgotPassword />,
@@ -80,7 +90,7 @@ const Router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPassword />,
-  }
+  },
 ]);
 
 function App() {
