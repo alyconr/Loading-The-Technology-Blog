@@ -35,11 +35,12 @@ const ForgotPassword = () => {
 
     if (validateInputs()) {
       try {
-        await axios.post("http://localhost:9000/api/v1/auth/requestPasswordReset", {
-          email: inputs.email,
-        });
-
-        navigate("/login");
+        await axios.post(
+          "http://localhost:9000/api/v1/auth/requestPasswordReset",
+          {
+            email: inputs.email,
+          }
+        );
 
         toast.success("Password reset link sent to your email", {
           position: "bottom-right",
@@ -51,6 +52,8 @@ const ForgotPassword = () => {
           progress: undefined,
           theme: "dark",
         });
+
+        navigate("/login");
       } catch (err) {
         console.log(err);
 
