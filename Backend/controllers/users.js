@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { StatusCodes } = require("http-status-codes");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const pool = require("../db/connect");
 
@@ -101,9 +102,45 @@ const updateUser = async (req, res) => {
   });
 };
 
+
+const deleteUser = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    // check if token exists
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Unauthorized no token" });
+  }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+  if (!decoded) {
+    // check if token is valid
+
+    return res.status(StatusCodes.UNAUTHORIZED).json({ error: "Unauthorized" });
+  }
+
+  const sql = "DELETE FROM users WHERE `username` = ?";
+
+  const values = [req.params.username];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json({ message: "User and account deleted successfully" });
+    }
+  })
+}
+
 module.exports = {
   getCurrentUser,
   updateUser,
   getUserPosts,
   getAllUsers,
+  deleteUser
 };
