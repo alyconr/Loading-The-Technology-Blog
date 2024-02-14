@@ -153,7 +153,7 @@ const Navbar = () => {
                     className="menu-item text-decoration-none"
                     href="#/action-3"
                   >
-                    <IoSettingsOutline /> Settings
+                   <Link to={`/settings/${currentUser?.user.username}`} className="menu-item text-decoration-none"><IoSettingsOutline /> Settings</Link> 
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -176,9 +176,9 @@ const Navbar = () => {
                 </Button>
               </ImageProfile>
 
-              <Modal show={showModal} onHide={handleClose}>
-                <Modal.Header className="border-0" closeButton></Modal.Header>
-                <Modal.Body>
+              <Modal  show={showModal} onHide={handleClose}>
+                <Modal.Header className=" border-0" closeButton></Modal.Header>
+                <Modal.Body className="bg-dark">
                   <ProfileContainer>
                     <img
                       src={`../upload/${currentUser.user.image}`}
