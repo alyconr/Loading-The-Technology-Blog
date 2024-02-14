@@ -25,7 +25,6 @@ import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/forgotPassword";
 import Settings from "./components/settings";
 
-
 const Layout = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";

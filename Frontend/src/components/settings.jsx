@@ -43,7 +43,7 @@ const Settings = () => {
           withCredentials: true,
           credentials: "include",
         });
-        setUser(res.data[0]);        
+        setUser(res.data[0]);
         setName(res.data[0]?.fullname || "");
         setPassword(res.data[0]?.password || "");
         setBio(res.data[0]?.bio || "");
@@ -93,7 +93,7 @@ const Settings = () => {
           credentials: "include",
         }
       );
-    
+
       navigate(`/profile/${currentUser?.user.username}`);
       toast.success("Profile updated successfully", {
         position: "top-center",
@@ -116,7 +116,7 @@ const Settings = () => {
   };
 
   const handleCancel = () => {
-    navigate (`/`);
+    navigate(`/`);
   };
 
   return (
