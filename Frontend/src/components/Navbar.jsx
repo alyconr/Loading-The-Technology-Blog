@@ -8,12 +8,18 @@ import { RiLogoutCircleRLine } from "react-icons/ri";
 import { IoSettingsOutline } from "react-icons/io5";
 import logo from "../assets/logo.png";
 import axios from "axios";
+import { Button, Modal } from "react-bootstrap";
+
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [draftId, setDraftId] = useState("");
   const [draftPost, setDraftPost] = useState({});
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
@@ -65,31 +71,54 @@ const Navbar = () => {
         </Link>
 
         <Menu>
-          <MenuItem to="/">Home</MenuItem>
+          <MenuItem className="text-decoration-none" to="/">
+            Home
+          </MenuItem>
           <Dropdown>
             <Dropdown.Toggle variant="primary" id="dropdown-basic">
               Categories
             </Dropdown.Toggle>
 
-            <Dropdown.Menu className="bg-secondary">
+            <Dropdown.Menu className="bg-light ">
               <Dropdown.Item>
-                <MenuItem to="/?category=Web-Development">
+                <MenuItem
+                  className=" menu-item   text-decoration-none "
+                  to="/?category=Web-Development"
+                >
                   Web Development
                 </MenuItem>
               </Dropdown.Item>
               <Dropdown.Item>
-                <MenuItem to="/?category=Cloud-Computing">
+                <MenuItem
+                  className="  menu-item text-decoration-none "
+                  to="/?category=Cloud-Computing"
+                >
                   Cloud Computing
                 </MenuItem>
               </Dropdown.Item>
               <Dropdown.Item>
-                <MenuItem to="/?category=DevOps">DevOps</MenuItem>
+                <MenuItem
+                  className="  menu-item text-decoration-none "
+                  to="/?category=DevOps"
+                >
+                  DevOps
+                </MenuItem>
               </Dropdown.Item>
               <Dropdown.Item>
-                <MenuItem to="/?category=Security">Security</MenuItem>
+                <MenuItem
+                  className="  menu-item text-decoration-none "
+                  to="/?category=Security"
+                >
+                  Security
+                </MenuItem>
               </Dropdown.Item>
               <Dropdown.Item>
-                <MenuItem to="/?category=Linux">Linux</MenuItem>
+                <MenuItem
+                  className="  menu-item text-decoration-none "
+                  to="/?category=Linux"
+                >
+                  Linux
+                </MenuItem>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -106,14 +135,24 @@ const Navbar = () => {
 
                 <Dropdown.Menu>
                   <Profile to={`/profile/${currentUser?.user.username}`}>
-                    <Dropdown.Item href="#/action-1" onClick={closeMobileMenu}>
+                    <Dropdown.Item
+                      className="menu-item text-decoration-none"
+                      href="#/action-1"
+                      onClick={closeMobileMenu}
+                    >
                       <CgProfile size={20} /> Profile
                     </Dropdown.Item>
                   </Profile>
-                  <Dropdown.Item onClick={handleLogout}>
+                  <Dropdown.Item
+                    className="menu-item text-decoration-none"
+                    onClick={handleLogout}
+                  >
                     <RiLogoutCircleRLine /> Logout
                   </Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">
+                  <Dropdown.Item
+                    className="menu-item text-decoration-none"
+                    href="#/action-3"
+                  >
                     <IoSettingsOutline /> Settings
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -126,8 +165,30 @@ const Navbar = () => {
                 Write <img className="write-img" src="../write.png" alt="" />
               </Write>
               <ImageProfile>
-                  <img src={`../upload/${currentUser.user.image}`} alt="" />
+                <Button
+                  onClick={handleShow}
+                  className="bg-transparent border-0"
+                >
+                  <img
+                    src={`../upload/${currentUser.user.image}`}
+                    alt={currentUser.user.username}
+                  />
+                </Button>
               </ImageProfile>
+
+              <Modal show={showModal} onHide={handleClose}>
+                <Modal.Header className="border-0" closeButton></Modal.Header>
+                <Modal.Body>
+                  <ProfileContainer>
+                    <img
+                      src={`../upload/${currentUser.user.image}`}
+                      alt={currentUser.user.username}
+                    />
+                    <h1>{currentUser.user.fullname}</h1>
+                    <h3>Email: {currentUser.user.email}</h3>
+                  </ProfileContainer>
+                </Modal.Body>
+              </Modal>
             </>
           ) : (
             <Login to="/login">Login</Login>
@@ -144,25 +205,46 @@ const Navbar = () => {
                 Categories
               </Dropdown.Toggle>
 
-              <Dropdown.Menu className="bg-secondary">
+              <Dropdown.Menu className="bg-light">
                 <Dropdown.Item>
-                  <MenuItem to="/?category=Web-Development">
+                  <MenuItem
+                    className="menu-item text-decoration-none"
+                    to="/?category=Web-Development"
+                  >
                     Web Development
                   </MenuItem>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <MenuItem to="/?category=Cloud-Computing">
+                  <MenuItem
+                    className="menu-item text-decoration-none"
+                    to="/?category=Cloud-Computing"
+                  >
                     Cloud Computing
                   </MenuItem>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <MenuItem to="/?category=DevOps">DevOps</MenuItem>
+                  <MenuItem
+                    className="menu-item text-decoration-none"
+                    to="/?category=DevOps"
+                  >
+                    DevOps
+                  </MenuItem>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <MenuItem to="/?category=Security">Security</MenuItem>
+                  <MenuItem
+                    className="menu-item text-decoration-none"
+                    to="/?category=Security"
+                  >
+                    Security
+                  </MenuItem>
                 </Dropdown.Item>
                 <Dropdown.Item>
-                  <MenuItem to="/?category=Linux">Linux</MenuItem>
+                  <MenuItem
+                    className="menu-item text-decoration-none"
+                    to="/?category=Linux"
+                  >
+                    Linux
+                  </MenuItem>
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -182,15 +264,22 @@ const Navbar = () => {
                       <Dropdown.Item
                         href="#/action-1"
                         onClick={closeMobileMenu}
+                        className="menu-item text-decoration-none"
                       >
                         <CgProfile size={20} /> Profile
                       </Dropdown.Item>
                     </Profile>
 
-                    <Dropdown.Item onClick={logout}>
+                    <Dropdown.Item
+                      className="menu-item text-decoration-none"
+                      onClick={logout}
+                    >
                       <RiLogoutCircleRLine /> Logout
                     </Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">
+                    <Dropdown.Item
+                      className="menu-item text-decoration-none"
+                      href="#/action-3"
+                    >
                       <IoSettingsOutline /> Settings
                     </Dropdown.Item>
                   </Dropdown.Menu>
@@ -201,6 +290,31 @@ const Navbar = () => {
                     <img className="write-img" src="../write.png" alt="" />
                   </Write>
                 </Span>
+                <ImageProfile>
+                  <Button
+                    onClick={handleShow}
+                    className="bg-transparent border-0"
+                  >
+                    <img
+                      src={`../upload/${currentUser.user.image}`}
+                      alt={currentUser.user.username}
+                    />
+                  </Button>
+                </ImageProfile>
+
+                <Modal show={showModal} onHide={handleClose}>
+                  <Modal.Header className="border-0" closeButton></Modal.Header>
+                  <Modal.Body>
+                    <ProfileContainer>
+                      <img
+                        src={`../upload/${currentUser.user.image}`}
+                        alt={currentUser.user.username}
+                      />
+                      <h1>{currentUser.user.fullname}</h1>
+                      <h3>Email: {currentUser.user.email}</h3>
+                    </ProfileContainer>
+                  </Modal.Body>
+                </Modal>
               </>
             ) : (
               <Span>
@@ -265,6 +379,20 @@ const Menu = styled.div`
   @media (max-width: 820px) {
     display: none; /* Hide the regular menu on small screens */
   }
+
+  .menu-item {
+    font-size: 18px;
+    cursor: pointer;
+    color: black;
+    border-radius: 25px;
+  }
+
+  .menu-item:hover {
+    text-decoration: underline;
+    background-color: #342e2e;
+    padding: 10px;
+    color: white;
+  }
 `;
 
 const MobileMenuIcon = styled.div`
@@ -310,6 +438,20 @@ const MobileMenu = styled.div`
     width: 100%;
     background-color: #342e2e;
     gap: 10px;
+  }
+
+  .menu-item {
+    font-size: 18px;
+    cursor: pointer;
+    color: black;
+    border-radius: 25px;
+  }
+
+  .menu-item:hover {
+    text-decoration: underline;
+    background-color: #342e2e;
+    padding: 10px;
+    color: white;
   }
 `;
 
@@ -415,7 +557,6 @@ const Profile = styled(Link)`
   width: 10%;
 `;
 
-
 const ImageProfile = styled.div`
   img {
     width: 50px;
@@ -443,4 +584,49 @@ const Login = styled(Link)`
   transition: all 0.3s ease;
   width: 15%;
   text-align: center;
+`;
+
+const ProfileContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 5rem;
+  border: 1px solid #ebe3d5;
+  margin: 2rem auto;
+  border-radius: 10px;
+  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  background-image: linear-gradient(
+    to right top,
+    #c9e0d7,
+    #b4dbe1,
+    #b1d2ee,
+    #c7c3ec,
+    #e6b2d4
+  );
+
+  img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #1a0a06;
+    text-align: center;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: bolder;
+    color: #1a0a06;
+    text-align: center;
+  }
 `;
