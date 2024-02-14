@@ -53,7 +53,6 @@ const Profile = () => {
             credentials: "include",
           });
           setUser(res.data[0]);
-          console.log(res.data[0]);
           setName(res.data[0]?.fullname || "");
           setPassword(res.data[0]?.password || "");
           setBio(res.data[0]?.bio || "");
@@ -325,6 +324,11 @@ const ProfileContainer = styled.div`
     height: 150px;
     display: block;
     margin: 0 auto;
+  }
+
+  h1 {
+    color: #333;
+    text-align: center;
   }
 
   h3 {
