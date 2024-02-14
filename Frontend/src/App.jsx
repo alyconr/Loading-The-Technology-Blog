@@ -23,6 +23,8 @@ import Profile from "./pages/Profile";
 import Userposts from "./pages/Userposts";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/forgotPassword";
+import Settings from "./components/settings";
+
 
 const Layout = () => {
   const location = useLocation();
@@ -67,6 +69,10 @@ const Router = createBrowserRouter([
       {
         path: "/profile/:username",
         element: <Profile />,
+      },
+      {
+        path: "/settings/:username",
+        element: <Settings />,
       },
       {
         path: "/profile/:username/posts",
