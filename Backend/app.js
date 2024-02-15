@@ -45,6 +45,7 @@ const clapsOnCommentsRouter = require("./routes/clapsOnComment");
 const clapsCommentsOnCommentsRouter = require("./routes/clapsCommentsOnComments");
 const comentsOnCommentRouter = require("./routes/commentsOnComments");
 const draftPostsRouter = require("./routes/draft.post");
+const followersRouter = require("./routes/followers");
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postsRouter);
@@ -55,6 +56,7 @@ app.use("/api/v1/clapsoncomments", clapsOnCommentsRouter);
 app.use("/api/v1/clapsoncommentsoncomment", clapsCommentsOnCommentsRouter);
 app.use("/api/v1/comments", commentsRouter);
 app.use("/api/v1/commentsoncomment", comentsOnCommentRouter);
+app.use("/api/v1/followers", followersRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World, IT WORKS");
