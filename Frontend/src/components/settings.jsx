@@ -119,6 +119,20 @@ const Settings = () => {
     navigate(`/`);
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:9000/api/v1/user/${currentUser?.user.username}`,
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <EditProfile>
       <form>
@@ -198,6 +212,7 @@ const Settings = () => {
       <div className="Actions">
         <button onClick={handleSave}>Save</button>
         <button onClick={handleCancel}>cancel</button>
+        <button onClick={handleDeleteAccount} className="danger">Delete Account</button>
       </div>
     </EditProfile>
   );
@@ -208,11 +223,13 @@ const EditProfile = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 5rem;
-  width: 80vw;
+  width: 70vw;
   border: 1px solid #ebe3d5;
   margin: 2rem auto;
   border-radius: 10px;
-  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 2px 1px 43px 23px rgba(0,0,0,0.75);
+-moz-box-shadow: 2px 1px 43px 23px rgba(0,0,0,0.75);
+box-shadow: 2px 1px 43px 23px rgba(0,0,0,0.75);
 
   input {
     padding: 0 2.5rem;
@@ -295,6 +312,14 @@ const EditProfile = styled.div`
     width: 100%;
     text-align: center;
     display: block;
+  }
+
+  button[class="danger"] {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 6, 36, 1) 0%,
+      rgba(255, 0, 0, 1) 35%
+    );
   }
 
   button:hover {
