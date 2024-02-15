@@ -175,7 +175,8 @@ const Navbar = () => {
                 Write <img className="write-img" src="../write.png" alt="" />
               </Write>
               <ImageProfile>
-                <Button
+                { currentUser?.user.image ?  (
+                  <Button
                   onClick={handleShow}
                   className="bg-transparent border-0"
                 >
@@ -184,16 +185,24 @@ const Navbar = () => {
                     alt={currentUser.user.username}
                   />
                 </Button>
+                ) : (
+                  <Button onClick={handleShow}
+                  className="bg-transparent border-0">
+                    <CgProfile size={35} />
+                  </Button>
+                ) }
               </ImageProfile>
 
               <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header className=" border-0" closeButton></Modal.Header>
                 <Modal.Body className="bg-dark">
                   <ProfileContainer>
-                    <img
+                    { currentUser?.user.image ? (<img
                       src={`../upload/${currentUser.user.image}`}
                       alt={currentUser.user.username}
-                    />
+                    />) : (
+                      <CgProfile size={35} />
+                    )}
                     <h1>{currentUser.user.fullname}</h1>
                     <h3>Email: {currentUser.user.email}</h3>
                     {follow ? <button onClick={handleFollow} className="btn btn-danger">Following</button> : <button  onClick={handleFollow} className="btn btn-primary">Follow</button>}
@@ -302,15 +311,22 @@ const Navbar = () => {
                   </Write>
                 </Span>
                 <ImageProfile>
+                { currentUser?.user.image ?  (
                   <Button
-                    onClick={handleShow}
-                    className="bg-transparent border-0"
-                  >
-                    <img
-                      src={`../upload/${currentUser.user.image}`}
-                      alt={currentUser.user.username}
-                    />
+                  onClick={handleShow}
+                  className="bg-transparent border-0"
+                >
+                  <img
+                    src={`../upload/${currentUser.user.image}`}
+                    alt={currentUser.user.username}
+                  />
+                </Button>
+                ) : (
+                  <Button onClick={handleShow}
+                  className="bg-transparent border-0">
+                    <CgProfile size={35} />
                   </Button>
+                ) }
                 </ImageProfile>
 
                 <Modal show={showModal} onHide={handleClose}>
