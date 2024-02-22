@@ -11,7 +11,10 @@ import { AuthContext } from "../context/authContext";
 import { toast } from "react-toastify";
 import useFetch from "../utils/useFetch";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { Modal, Button } from "react-bootstrap"; // Import Modal and Button from react-bootstrap
+import { Modal, Button } from "react-bootstrap";
+import { SlUserFollowing } from "react-icons/sl";
+import { SlUserUnfollow } from "react-icons/sl";
+// Import Modal and Button from react-bootstrap
 
 const Profile = () => {
   const [user, setUser] = useState({});
@@ -28,7 +31,7 @@ const Profile = () => {
   const [social2, setSocial2] = useState("");
   const [errors, setErrors] = useState({ password: "" });
   const [showErrorModal, setShowErrorModal] = useState(false);
-
+  const [follow, setFollow] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -136,6 +139,43 @@ const Profile = () => {
     setIsEditMode(false);
   };
 
+  const handleFollow = async () => {
+    try {
+      await axios.post(
+        `http://localhost:9000/api/v1/followers/${currentUser?.user.id}`,
+        {
+          following_id: user.id,
+          followers_count: 1,
+        },
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
+      setFollow(!follow);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUnFollow = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:9000/api/v1/followers/unfollow/${currentUser?.user.id}`,
+        {
+          data: {
+            following_id: user.id,
+          },
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
+      setFollow(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Wrapper>
       <Container>
@@ -193,6 +233,18 @@ const Profile = () => {
                   </Link>
                 </h3>
               )}
+            </div>
+            <div>
+              {!follow && currentUser !== user.username ? (
+                <Button onClick={handleFollow}>
+                  Follow
+                  <SlUserUnfollow />
+                </Button>
+              ) : follow && !currentUser !== user.username ? (
+                <Button onClick={handleUnFollow}>
+                  unFollow <SlUserFollowing />
+                </Button>
+              ) : null}
             </div>
           </ProfileContainer>
         ) : (
