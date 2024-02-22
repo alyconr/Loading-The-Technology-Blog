@@ -9,7 +9,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import logo from "../assets/logo.png";
 import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
-import users from  "../assets/users.png";
+import users from "../assets/users.png";
 
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -18,7 +18,6 @@ const Navbar = () => {
   const [draftPost, setDraftPost] = useState({});
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [follow, setFollow] = useState(false);
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
@@ -62,10 +61,6 @@ const Navbar = () => {
     logout();
     navigate("/");
   };
-
-  const handleFollow = () => {
-    setFollow(!follow);
-  }
 
   return (
     <NavBar>
@@ -176,37 +171,40 @@ const Navbar = () => {
                 Write <img className="write-img" src="../write.png" alt="" />
               </Write>
               <ImageProfile>
-                { currentUser?.user.image ?  (
+                {currentUser?.user.image ? (
                   <Button
-                  onClick={handleShow}
-                  className="bg-transparent border-0"
-                >
-                  <img
-                    src={`../upload/${currentUser.user.image}`}
-                    alt={currentUser.user.username}
-                  />
-                </Button>
-                ) : (
-                  <Button onClick={handleShow}
-                  className="bg-transparent border-0">
-                   <img src={users} alt="" />
+                    onClick={handleShow}
+                    className="bg-transparent border-0"
+                  >
+                    <img
+                      src={`../upload/${currentUser.user.image}`}
+                      alt={currentUser.user.username}
+                    />
                   </Button>
-                ) }
+                ) : (
+                  <Button
+                    onClick={handleShow}
+                    className="bg-transparent border-0"
+                  >
+                    <img src={users} alt="" />
+                  </Button>
+                )}
               </ImageProfile>
 
               <Modal show={showModal} onHide={handleClose}>
                 <Modal.Header className=" border-0" closeButton></Modal.Header>
                 <Modal.Body className="bg-dark">
                   <ProfileContainer>
-                    { currentUser?.user.image ? (<img
-                      src={`../upload/${currentUser.user.image}`}
-                      alt={currentUser.user.username}
-                    />) : (
+                    {currentUser?.user.image ? (
+                      <img
+                        src={`../upload/${currentUser.user.image}`}
+                        alt={currentUser.user.username}
+                      />
+                    ) : (
                       <CgProfile size={35} />
                     )}
                     <h1>{currentUser.user.fullname}</h1>
                     <h3>Email: {currentUser.user.email}</h3>
-                    {follow ? <button onClick={handleFollow} className="btn btn-danger">Following</button> : <button  onClick={handleFollow} className="btn btn-primary">Follow</button>}
                   </ProfileContainer>
                 </Modal.Body>
               </Modal>
@@ -312,22 +310,24 @@ const Navbar = () => {
                   </Write>
                 </Span>
                 <ImageProfile>
-                { currentUser?.user.image ?  (
-                  <Button
-                  onClick={handleShow}
-                  className="bg-transparent border-0"
-                >
-                  <img
-                    src={`../upload/${currentUser.user.image}`}
-                    alt={currentUser.user.username}
-                  />
-                </Button>
-                ) : (
-                  <Button onClick={handleShow}
-                  className="bg-transparent border-0">
-                    <img src={users} alt="users" />
-                  </Button>
-                ) }
+                  {currentUser?.user.image ? (
+                    <Button
+                      onClick={handleShow}
+                      className="bg-transparent border-0"
+                    >
+                      <img
+                        src={`../upload/${currentUser.user.image}`}
+                        alt={currentUser.user.username}
+                      />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleShow}
+                      className="bg-transparent border-0"
+                    >
+                      <img src={users} alt="users" />
+                    </Button>
+                  )}
                 </ImageProfile>
 
                 <Modal show={showModal} onHide={handleClose}>
@@ -340,7 +340,6 @@ const Navbar = () => {
                       />
                       <h1>{currentUser.user.fullname}</h1>
                       <h3>Email: {currentUser.user.email}</h3>
-                      <button className="btn btn-primary">Follow</button>
                     </ProfileContainer>
                   </Modal.Body>
                 </Modal>
