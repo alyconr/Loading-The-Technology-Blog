@@ -10,6 +10,7 @@ import logo from "../assets/logo.png";
 import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
 import users from "../assets/users.png";
+import user from "../assets/user100.png";
 
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -201,7 +202,7 @@ const Navbar = () => {
                         alt={currentUser.user.username}
                       />
                     ) : (
-                      <CgProfile size={35} />
+                         <img src={user} alt="user" />
                     )}
                     <h1>{currentUser.user.fullname}</h1>
                     <h3>Email: {currentUser.user.email}</h3>
