@@ -9,6 +9,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import logo from "../assets/logo.png";
 import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
+import users from  "../assets/users.png";
 
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -188,7 +189,7 @@ const Navbar = () => {
                 ) : (
                   <Button onClick={handleShow}
                   className="bg-transparent border-0">
-                    <CgProfile size={35} />
+                   <img src={users} alt="" />
                   </Button>
                 ) }
               </ImageProfile>
@@ -324,7 +325,7 @@ const Navbar = () => {
                 ) : (
                   <Button onClick={handleShow}
                   className="bg-transparent border-0">
-                    <CgProfile size={35} />
+                    <img src={users} alt="users" />
                   </Button>
                 ) }
                 </ImageProfile>
