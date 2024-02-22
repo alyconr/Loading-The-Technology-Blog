@@ -14,6 +14,8 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Modal, Button } from "react-bootstrap";
 import { SlUserFollowing } from "react-icons/sl";
 import { SlUserUnfollow } from "react-icons/sl";
+import { MdOutlineGroups2 } from "react-icons/md";
+
 // Import Modal and Button from react-bootstrap
 
 const Profile = () => {
@@ -32,6 +34,7 @@ const Profile = () => {
   const [errors, setErrors] = useState({ password: "" });
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [follow, setFollow] = useState(false);
+  const [followers, setFollowers] = useState([]);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -158,6 +161,25 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+     const fetchFollowers = async () => {
+       try {
+         const res = await axios.get(
+           `http://localhost:9000/api/v1/followers/${currentUser?.user.id}`,
+         )
+         
+         setFollowers(res.data.followers);
+         console.log(res.data.followers);
+        
+       } catch (error) {
+         console.error(error);
+       }
+     }
+
+     fetchFollowers()
+     
+  }, [currentUser?.user.id])
+
   const handleUnFollow = async () => {
     try {
       await axios.delete(
@@ -197,11 +219,24 @@ const Profile = () => {
 
             <hr />
 
-            <div>
+            <div className="d-flex flex-column">
               <PostLink to={`/profile/${user.username}/posts`}>
                 <MdOutlinePostAdd size={30} color="#6A072D" /> {posts?.length}{" "}
-                Posts <FaMagnifyingGlass />
+                Posts <FaMagnifyingGlass  />
+                
               </PostLink>
+              <PostLink className="d-flex align-items-center gap-2">
+                <MdOutlineGroups2  size={30} color="#6A072D"/> <>
+                  {Array.isArray(followers) && followers.length > 0 ? (
+                    followers.map((follower) => (
+                      <div>
+                        {follower.total_followers} Followers
+                      </div>
+                    ))
+                  ): null}
+                </> <FaMagnifyingGlass  />
+              </PostLink>
+              
             </div>
 
             <hr />
