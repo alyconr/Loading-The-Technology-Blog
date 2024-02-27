@@ -43,7 +43,10 @@ const createFollower = async (req, res) => {
 
 const getTotalFollowers = async (req, res) => {
   const sql =
-    "SELECT SUM (followers.followers_count) AS total_followers FROM followers WHERE following_id = ?";
+    "SELECT users.id, `username`, users.image AS userImage, SUM (followers.followers_count) AS total_followers FROM followers " +
+    "JOIN users ON followers.following_id = users.id " +
+    "WHERE following_id = ? " +
+    "GROUP BY users.id, `username` , users.image";
 
   const values = [req.params.id];
 
@@ -52,7 +55,7 @@ const getTotalFollowers = async (req, res) => {
       console.error("Database query error:", queryError);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR);
     } else {
-      res.status(StatusCodes.OK).json({ followers: results });
+      res.status(StatusCodes.OK).json(results);
     }
   });
 };
@@ -63,7 +66,6 @@ const getUserFollowers = async (req, res) => {
   "JOIN users ON followers.follower_id = users.id " +
   "WHERE following_id = ? " +
   "GROUP BY users.id, `fullname` , users.image";
-
 
   const values = [req.params.id];
 
