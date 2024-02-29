@@ -162,23 +162,22 @@ const Profile = () => {
   };
 
   useEffect(() => {
-     const fetchFollowers = async () => {
-       try {
-         const res = await axios.get(
-           `http://localhost:9000/api/v1/followers/${currentUser?.user.id}`,
-         )
-         
-         setFollowers(res.data.followers);
-         console.log(res.data.followers);
-        
-       } catch (error) {
-         console.error(error);
-       }
-     }
+    const fetchFollowers = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:9000/api/v1/followers/${currentUser?.user.id}`
+        );
 
-     fetchFollowers()
-     
-  }, [currentUser?.user.id])
+        setFollowers(res.data.total_followers);
+        setFollow(true);
+        console.log(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchFollowers();
+  }, [currentUser?.user.id]);
 
   const handleUnFollow = async () => {
     try {
@@ -222,21 +221,12 @@ const Profile = () => {
             <div className="d-flex flex-column">
               <PostLink to={`/profile/${user.username}/posts`}>
                 <MdOutlinePostAdd size={30} color="#6A072D" /> {posts?.length}{" "}
-                Posts <FaMagnifyingGlass  />
-                
+                Posts <FaMagnifyingGlass />
               </PostLink>
               <PostLink className="d-flex align-items-center gap-2">
-                <MdOutlineGroups2  size={30} color="#6A072D"/> <>
-                  {Array.isArray(followers) && followers.length > 0 ? (
-                    followers.map((follower) => (
-                      <div>
-                        {follower.total_followers} Followers
-                      </div>
-                    ))
-                  ): null}
-                </> <FaMagnifyingGlass  />
+                <MdOutlineGroups2 size={30} color="#6A072D" />{" "}
+                <>{followers} Followers</> <FaMagnifyingGlass />
               </PostLink>
-              
             </div>
 
             <hr />
@@ -270,12 +260,14 @@ const Profile = () => {
               )}
             </div>
             <div>
-              {!follow && currentUser !== user.username ? (
+              {currentUser &&
+              currentUser.user.username !== user.username &&
+              !follow ? (
                 <Button onClick={handleFollow}>
                   Follow
                   <SlUserUnfollow />
                 </Button>
-              ) : follow && !currentUser !== user.username ? (
+              ) : currentUser && currentUser.user.username !== user.username ? (
                 <Button onClick={handleUnFollow}>
                   unFollow <SlUserFollowing />
                 </Button>
