@@ -45,10 +45,10 @@ const createFollower = async (req, res) => {
 
 const getTotalFollowers = async (req, res) => {
   const sql =
-    "SELECT users.id, `username`, users.image AS userImage, SUM (followers.followers_count) AS total_followers FROM followers " +
+    "SELECT users.id, `username`, users.image AS userImage,   SUM (followers.followers_count) AS total_followers FROM followers " +
     "JOIN users ON followers.following_id = users.id " +
     "WHERE following_id = ? " +
-    "GROUP BY users.id, `username` , users.image";
+    "GROUP BY users.id, `username` , users.image ";
 
   const values = [req.params.id];
 
