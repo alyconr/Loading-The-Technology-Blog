@@ -165,19 +165,18 @@ const Profile = () => {
     const fetchFollowers = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:9000/api/v1/followers/${currentUser?.user.id}`
+          `http://localhost:9000/api/v1/followers/${user.id}`
         );
 
-        setFollowers(res.data.total_followers);
-        setFollow(true);
-        console.log(res.data);
+        setFollowers(res.data[0].total_followers);
+        console.log(res.data[0].total_followers);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchFollowers();
-  }, [currentUser?.user.id]);
+  }, [user.id]);
 
   const handleUnFollow = async () => {
     try {
