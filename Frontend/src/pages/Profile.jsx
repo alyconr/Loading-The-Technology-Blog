@@ -16,6 +16,7 @@ import { SlUserFollowing } from "react-icons/sl";
 import { SlUserUnfollow } from "react-icons/sl";
 import { MdOutlineGroups2 } from "react-icons/md";
 
+
 // Import Modal and Button from react-bootstrap
 
 const Profile = () => {
@@ -35,6 +36,7 @@ const Profile = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -189,6 +191,23 @@ const Profile = () => {
     fetchFollowers();
   }, [user.id]);
 
+  useEffect(() => {
+    const fetchFollowings = async () => {
+      try {
+        const res = await axios.get(
+      `http://localhost:9000/api/v1/followings/${user.id}`
+        )
+
+        setFollowing(res.data)
+        console.log(res.data)
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchFollowings();
+  }, [user.id]);
+
   const handleUnFollow = async () => {
     try {
       await axios.delete(
@@ -235,7 +254,10 @@ const Profile = () => {
               </PostLink>
               <PostLink className="d-flex align-items-center gap-2">
                 <MdOutlineGroups2 size={30} color="#6A072D" />{" "}
-                <>{followers?.length - 1} Followers</>
+                <>{followers?.length > 0 ? followers?.length - 1 : 0} Followers</>
+                <FaMagnifyingGlass />
+                <SlUserFollowing className="ms-2" size={25} color="#6A072D" />{" "}
+                <>{following?.length > 0 ? following?.length  : 0} Followings</>
                 <FaMagnifyingGlass />
               </PostLink>
             </div>
