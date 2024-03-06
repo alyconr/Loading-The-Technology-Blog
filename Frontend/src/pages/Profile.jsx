@@ -168,8 +168,19 @@ const Profile = () => {
           `http://localhost:9000/api/v1/followers/${user.id}`
         );
 
-        setFollowers(res.data[0].total_followers);
-        console.log(res.data[0].total_followers);
+        setFollowers(res.data);
+
+        const values = res.data;
+
+        const filter = values.filter(
+          (value) => value.id === currentUser?.user.id
+        );
+
+        if (filter.length > 0) {
+          if (filter[0].id === currentUser?.user.id) {
+            setFollow(true);
+          }
+        }
       } catch (error) {
         console.error(error);
       }
@@ -224,7 +235,8 @@ const Profile = () => {
               </PostLink>
               <PostLink className="d-flex align-items-center gap-2">
                 <MdOutlineGroups2 size={30} color="#6A072D" />{" "}
-                <>{followers} Followers</> <FaMagnifyingGlass />
+                <>{followers?.length - 1} Followers</>
+                <FaMagnifyingGlass />
               </PostLink>
             </div>
 
