@@ -15,7 +15,7 @@ import { Modal, Button } from "react-bootstrap";
 import { SlUserFollowing } from "react-icons/sl";
 import { SlUserUnfollow } from "react-icons/sl";
 import { MdOutlineGroups2 } from "react-icons/md";
-
+import followerUser from "../assets/follower.png";
 
 // Import Modal and Button from react-bootstrap
 
@@ -37,6 +37,7 @@ const Profile = () => {
   const [follow, setFollow] = useState(false);
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -171,6 +172,7 @@ const Profile = () => {
         );
 
         setFollowers(res.data);
+        console.log(res.data);
 
         const values = res.data;
 
@@ -195,15 +197,15 @@ const Profile = () => {
     const fetchFollowings = async () => {
       try {
         const res = await axios.get(
-      `http://localhost:9000/api/v1/followings/${user.id}`
-        )
+          `http://localhost:9000/api/v1/followings/${user.id}`
+        );
 
-        setFollowing(res.data)
-        console.log(res.data)
+        setFollowing(res.data);
+        console.log(res.data);
       } catch (error) {
         console.error(error);
       }
-    }
+    };
 
     fetchFollowings();
   }, [user.id]);
@@ -254,10 +256,59 @@ const Profile = () => {
               </PostLink>
               <PostLink className="d-flex align-items-center gap-2">
                 <MdOutlineGroups2 size={30} color="#6A072D" />{" "}
-                <>{followers?.length > 0 ? followers?.length - 1 : 0} Followers</>
-                <FaMagnifyingGlass />
+                <>{followers?.length > 0 ? followers?.length : 0} Followers</>
+                <Button
+                  onClick={() => setShowModal(true)}
+                  className="btn-followers border-0 bg-transparent"
+                >
+                  <FaMagnifyingGlass size={25} color="#333" />
+                </Button>
+                <Modal
+                  size="sm"
+                  show={showModal}
+                  onHide={() => setShowModal(false)}
+                  aria-labelledby="example-modal-sizes-title-sm "
+                  centered
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title
+                      className="text-dark bold fw-bold "
+                      id="example-modal-sizes-title-sm"
+                    >
+                      Followers
+                    </Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    {Array.isArray(followers) &&
+                      followers.map((follower, index) => (
+                        <div
+                          className="d-flex align-items-center gap-3 mb-2"
+                          key={`${follower.id}_${index}`}
+                        >
+                          {follower.userImage ? (
+                            <Image>
+                              <img
+                                className="userImg-follower"
+                                src={`../upload/${follower.userImage}`}
+                                alt={user.fullname}
+                              />
+                            </Image>
+                          ) : (
+                            <img src={followerUser} alt={user.username} />
+                          )}
+                          <Link
+                            onClick={() => setShowModal(false)}
+                            className="text-decoration-none text-dark"
+                            to={`/profile/${follower.username}`}
+                          >
+                            {follower.fullname}
+                          </Link>
+                        </div>
+                      ))}
+                  </Modal.Body>
+                </Modal>
                 <SlUserFollowing className="ms-2" size={25} color="#6A072D" />{" "}
-                <>{following?.length > 0 ? following?.length  : 0} Followings</>
+                <>{following?.length > 0 ? following?.length : 0} Followings</>
                 <FaMagnifyingGlass />
               </PostLink>
             </div>
@@ -447,7 +498,7 @@ const ProfileContainer = styled.div`
     color: #333;
     font-size: 1.5rem;
   }
-  button {
+  button:not(.btn-followers) {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     border-radius: 10px;
@@ -466,7 +517,7 @@ const ProfileContainer = styled.div`
     display: block;
   }
 
-  button:hover {
+  button:hover:not(.btn-followers) {
     background: radial-gradient(
       circle,
       rgba(0, 6, 36, 1) 0%,
@@ -563,7 +614,7 @@ const EditProfile = styled.div`
     flex-direction: column;
     margin-bottom: -10px;
   }
-  button {
+  button:not(.btn-followers) {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     border-radius: 10px;
@@ -582,7 +633,7 @@ const EditProfile = styled.div`
     display: block;
   }
 
-  button:hover {
+  button:not(.btn-followers):hover {
     background: radial-gradient(
       circle,
       rgba(0, 6, 36, 1) 0%,
@@ -611,4 +662,14 @@ const PostLink = styled(Link)`
   color: #333;
   cursor: pointer;
   font-size: 1.5rem;
+`;
+
+const Image = styled.div`
+  .userImg-follower {
+    width: 40px;
+    height: 40px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+  }
 `;
