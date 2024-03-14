@@ -47,6 +47,7 @@ const comentsOnCommentRouter = require("./routes/commentsOnComments");
 const draftPostsRouter = require("./routes/draft.post");
 const followersRouter = require("./routes/followers");
 const followingsRouter = require("./routes/followings");
+const bookmarksRouter = require("./routes/bookmarks");
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postsRouter);
@@ -59,6 +60,7 @@ app.use("/api/v1/comments", commentsRouter);
 app.use("/api/v1/commentsoncomment", comentsOnCommentRouter);
 app.use("/api/v1/followers", followersRouter);
 app.use("/api/v1/followings", followingsRouter);
+app.use("/api/v1/bookmarks", bookmarksRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World, IT WORKS");
