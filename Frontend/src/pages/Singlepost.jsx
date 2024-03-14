@@ -134,10 +134,10 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
-          <button className="message " title="Bookmark">
-            {" "}
-            <MdBookmarkAdd className="bookmark" size={35} />
-          </button>
+          {post.fullname !== currentUser?.user?.fullname && <button className="message " title="Bookmark">
+            { " " }
+            <MdBookmarkAdd className="bookmark" size={ 35 } />
+          </button> }
         </div>
         <h1>{post.title}</h1>
         <h3>{post.description}</h3>
@@ -156,9 +156,9 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
-          <button className="message " title="Bookmark">
-            <MdBookmarkAdd className="bookmark" size={35} />
-          </button>
+          {post.fullname !== currentUser?.user?.fullname && <button className="message " title="Bookmark">
+            <MdBookmarkAdd className="bookmark" size={ 35 } />
+          </button> }
         </FooterAction>
         <Offcanvas show={show} onHide={handleClose} className="w-50 p-1 ">
           <Offcanvas.Header closeButton>
