@@ -11,7 +11,7 @@ import { Modal, Button } from "react-bootstrap";
 import { FaHandsClapping } from "react-icons/fa6";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-
+import follower from "../assets/follower.png";
 const APPLAUSE_MAX = 500;
 
 const ApplauseButton = () => {
@@ -176,8 +176,18 @@ const ApplauseButton = () => {
               usersClaps.map((user, index) => (
                 <div key={`${user.id}_${index}`}>
                   <UserClaps>
-                    {user.userImage && (
-                      <img src={user.userImage} alt={user.fullname} />
+                    {user.userImage ? (
+                      <img
+                        className="user-image"
+                        src={`../upload/${user.userImage}`}
+                        alt={user.fullname}
+                      />
+                    ) : (
+                      <img
+                        className="user-image"
+                        src={follower}
+                        alt={user.fullname}
+                      />
                     )}
                     <div> {user.fullname} </div>
                     <div>
@@ -336,7 +346,7 @@ const UserClaps = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 0.5rem;
   margin: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -349,4 +359,9 @@ const UserClaps = styled.div`
   color: black;
   font-size: 1.2rem;
   font-weight: bold;
+  .user-image {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+  }
 `;
