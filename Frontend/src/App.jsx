@@ -24,6 +24,7 @@ import Userposts from "./pages/Userposts";
 import ResetPassword from "./pages/ResetPassword";
 import ForgotPassword from "./pages/forgotPassword";
 import Settings from "./components/settings";
+import Bookmarks from "./pages/Bookmarks";
 
 const Layout = () => {
   const location = useLocation();
@@ -76,6 +77,10 @@ const Router = createBrowserRouter([
       {
         path: "/profile/:username/posts",
         element: <PrivateRoute element={ <Userposts /> } />,
+      },
+      {
+        path: "/profile/:username/bookmarks",
+        element: <PrivateRoute element={ <Bookmarks /> } />,
       },
       {
         path: "/login",
