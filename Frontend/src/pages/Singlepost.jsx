@@ -9,13 +9,14 @@ import axios from "axios";
 import moment from "moment";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-
+import follower from "../assets/follower.png";
 import dompurify from "dompurify";
 import { toast } from "react-toastify";
 import ApplauseButton from "../components/ClapCounter";
 import Comments from "../components/comments";
 import { FaCommentDots } from "react-icons/fa";
 import { Offcanvas } from "react-bootstrap";
+import { MdBookmarkAdd } from "react-icons/md";
 const Singlepost = () => {
   const [post, setPost] = useState({});
   const [userImage, setUserImage] = useState("");
@@ -133,6 +134,10 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
+          <button className="message " title="Bookmark">
+            {" "}
+            <MdBookmarkAdd className="bookmark" size={35} />
+          </button>
         </div>
         <h1>{post.title}</h1>
         <h3>{post.description}</h3>
@@ -151,8 +156,11 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
+          <button className="message " title="Bookmark">
+            <MdBookmarkAdd className="bookmark" size={35} />
+          </button>
         </FooterAction>
-        <Offcanvas show={show} onHide={handleClose} className="w-50">
+        <Offcanvas show={show} onHide={handleClose} className="w-50 p-1 ">
           <Offcanvas.Header closeButton>
             <Offcanvas.Title className="bg-dark text-light p-3 rounded ">
               User Comments <FaUsers size={30} />
@@ -162,11 +170,19 @@ const Singlepost = () => {
             <ContainerComments>
               {currentUser ? (
                 <div className="user-info">
-                  <img
-                    className="user-Img"
-                    src={`../upload/${currentUser.user.image}`}
-                    alt={currentUser.user.image}
-                  />
+                  {currentUser.user.image ? (
+                    <img
+                      className="user-Img"
+                      src={`../upload/${currentUser.user.image}`}
+                      alt={currentUser.user.image}
+                    />
+                  ) : (
+                    <img
+                      className="user-Img"
+                      src={follower}
+                      alt={currentUser.user.fullname}
+                    />
+                  )}
                   <h4 className="text-dark ">
                     {currentUser.user.fullname}{" "}
                     <p className="text-danger">What are your thoughts?</p>{" "}
@@ -287,16 +303,10 @@ const Post = styled.div`
     color: #884dff;
   }
 
-  .comments-end[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 0.5rem;
+  .bookmark {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #01df74;
   }
 `;
 
