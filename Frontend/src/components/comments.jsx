@@ -6,7 +6,7 @@ import axios from "axios";
 import moment from "moment";
 import dompurify from "dompurify";
 import { Link, useLocation } from "react-router-dom";
-import avatar from "../assets/user.png";
+import follower from "../assets/follower.png";
 import { AuthContext } from "../context/authContext";
 import { useContext } from "react";
 import { BsFillTrashFill } from "@react-icons/all-files/bs/BsFillTrashFill";
@@ -207,11 +207,15 @@ const Comments = ({ post, setPost }) => {
           commentList.map((comment, index) => (
             <Comment key={index}>
               <div className="user">
-                <img
-                  className="user-Img"
-                  src={`../upload/${currentUser.user.image}`}
-                  alt={post.userImage}
-                />
+                {post.userImage ? (
+                  <img
+                    className="user-Img"
+                    src={`../upload/${post.userImage}`}
+                    alt={post.userImage}
+                  />
+                ) : (
+                  <img className="user-Img" src={follower} alt="userImg" />
+                )}
                 <h2>{comment.fullname}</h2>
               </div>
               {editCommentId === comment.id ? (
