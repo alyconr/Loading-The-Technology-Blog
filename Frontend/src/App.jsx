@@ -67,15 +67,15 @@ const Router = createBrowserRouter([
       },
       {
         path: "/profile/:username",
-        element: <Profile />,
+        element: <PrivateRoute element={ <Profile /> } />,
       },
       {
         path: "/settings/:username",
-        element: <Settings />,
+        element: <PrivateRoute element={ <Settings /> } />,
       },
       {
         path: "/profile/:username/posts",
-        element: <Userposts />,
+        element: <PrivateRoute element={ <Userposts /> } />,
       },
       {
         path: "/login",
