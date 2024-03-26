@@ -24,6 +24,7 @@ const Singlepost = () => {
   const { currentUser } = useContext(AuthContext);
 
   const [show, setShow] = useState(false);
+  const [bookmark, setBookmark] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -86,6 +87,63 @@ const Singlepost = () => {
     };
   };
 
+
+  const handleBookmark = async () => {
+    try {
+      await axios.post(
+        'http://localhost:9000/api/v1/bookmarks',
+        {
+          usersId: currentUser?.user?.id,
+          postsId: postId,
+        },
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
+      setBookmark(true);
+      toast.info("Post bookmarked successfully", {
+        position: "bottom-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteBookmark = async () => {
+    try {
+      await axios.delete(`http://localhost:9000/api/v1/bookmarks/${currentUser?.user?.id}`,
+        {
+          data: {
+            usersId: currentUser?.user?.id,
+            postsId: postId,
+        } },
+        );
+      setBookmark(false);
+      toast.info("Post unbookmarked successfully", {
+        position: "bottom-right",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+
   
 
   return (
@@ -108,7 +166,7 @@ const Singlepost = () => {
 
             <p>Posted {moment(post.date).fromNow()}</p>
           </div>
-          {currentUserUsername && currentUserUsername === post.username && (
+          {currentUserUsername && currentUserUsername === post.username &&  (
             <div className="Actions">
               <Link to={`/write?edit=${postId}`} state={post}>
                 <button title="Edit" className="message">
@@ -137,10 +195,12 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
-          {post.fullname !== currentUser?.user?.fullname && <button className="message " title="Bookmark">
-            { " " }
+          {post.fullname !== currentUser?.user?.fullname &&  !bookmark ? <button onClick={handleBookmark} className="message " title="Bookmark">
             <MdBookmarkAdd className="bookmark" size={ 35 } />
-          </button> }
+          </button> : post.fullname !== currentUser?.user?.fullname &&  bookmark ? <button onClick={deleteBookmark} className="message " title="Bookmark"> 
+            { " " }
+            <MdBookmarkAdd className="bookmark" size={ 35 } color="#0D0D0E" />
+          </button> : null }
         </div>
         <h1>{post.title}</h1>
         <h3>{post.description}</h3>
@@ -159,8 +219,11 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
-          {post.fullname !== currentUser?.user?.fullname &&  <button className="message " title="Bookmark">
+          {post.fullname !== currentUser?.user?.fullname &&  !bookmark ? <button className="message " title="Bookmark">
             <MdBookmarkAdd className="bookmark" size={ 35 } />
+          </button> : <button onClick={deleteBookmark} className="message " title="Bookmark"> 
+            { " " }
+            <MdBookmarkAdd className="bookmark" size={ 35 } color="#0D0D0E" />
           </button> }
         </FooterAction>
         <Offcanvas show={show} onHide={handleClose} className="w-50 p-1 ">
