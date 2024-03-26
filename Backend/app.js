@@ -49,6 +49,7 @@ const followersRouter = require("./routes/followers");
 const followingsRouter = require("./routes/followings");
 const bookmarksRouter = require("./routes/bookmarks");
 
+
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/posts", postsRouter);
 app.use("/api/v1/draftposts", draftPostsRouter);
