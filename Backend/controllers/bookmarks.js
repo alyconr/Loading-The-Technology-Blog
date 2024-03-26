@@ -74,10 +74,27 @@ const deleteBookmark = async (req, res) => {
           .json({ message: "Bookmark deleted successfully" });
       }
     });
-  };
+};
+  
+const getSingleBookmark = async (req, res) => {
+  const sql = "SELECT bookmarks.id, users.id AS usersId, `fullname`, users.image AS userImage, `postsId` FROM bookmarks JOIN users ON bookmarks.usersId = users.id WHERE bookmarks.usersId = ?";
+  const values = [req.params.id];
+
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res.status(StatusCodes.OK).json(results);
+    }
+  });
+};
 
 module.exports = {
   createBookmark,
     getAllBookmarks,
-    deleteBookmark
+  deleteBookmark,
+  getSingleBookmark
 };
