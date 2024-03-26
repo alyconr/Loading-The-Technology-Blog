@@ -59,25 +59,25 @@ const getAllBookmarks = async (req, res) => {
 
 const deleteBookmark = async (req, res) => {
   const sql = "DELETE FROM bookmarks WHERE usersId = ? AND postsId = ?";
-    const values = [req.body.usersId, req.body.postsId];
+  const values = [req.body.usersId, req.body.postsId];
 
-    
-    pool.query(sql, values, (queryError, results) => {
-      if (queryError) {
-        console.error("Database query error:", queryError);
-        res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ error: "Database query error" });
-      } else {
-        res
-          .status(StatusCodes.OK)
-          .json({ message: "Bookmark deleted successfully" });
-      }
-    });
+  pool.query(sql, values, (queryError, results) => {
+    if (queryError) {
+      console.error("Database query error:", queryError);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ error: "Database query error" });
+    } else {
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Bookmark deleted successfully" });
+    }
+  });
 };
-  
+
 const getSingleBookmark = async (req, res) => {
-  const sql = "SELECT bookmarks.id, users.id AS usersId, `fullname`, users.image AS userImage, `postsId` FROM bookmarks JOIN users ON bookmarks.usersId = users.id WHERE bookmarks.usersId = ?";
+  const sql =
+    "SELECT bookmarks.id, users.id AS usersId, `fullname`, users.image AS userImage, `postsId` FROM bookmarks JOIN users ON bookmarks.usersId = users.id WHERE bookmarks.usersId = ?";
   const values = [req.params.id];
 
   pool.query(sql, values, (queryError, results) => {
@@ -87,14 +87,14 @@ const getSingleBookmark = async (req, res) => {
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .json({ error: "Database query error" });
     } else {
-      res.status(StatusCodes.OK).json(results);
+      res.status(StatusCodes.OK).json({ bookmarks: results[0] });
     }
   });
 };
 
 module.exports = {
   createBookmark,
-    getAllBookmarks,
+  getAllBookmarks,
   deleteBookmark,
-  getSingleBookmark
+  getSingleBookmark,
 };
