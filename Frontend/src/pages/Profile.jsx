@@ -173,7 +173,6 @@ const Profile = () => {
         );
 
         setFollowers(res.data);
-        
 
         const values = res.data;
 
@@ -309,15 +308,17 @@ const Profile = () => {
                   </Modal.Body>
                 </Modal>
                 <SlUserFollowing className="ms-2" size={25} color="#6A072D" />{" "}
-                <>{ following?.length > 0 ? following?.length : 0 } Followings</>
-                <Button onClick={ () => setShowModalFollowing(true) }
-                className="btn-followers border-0 bg-transparent">
-                <FaMagnifyingGlass size={25} color="#333" />
+                <>{following?.length > 0 ? following?.length : 0} Followings</>
+                <Button
+                  onClick={() => setShowModalFollowing(true)}
+                  className="btn-followers border-0 bg-transparent"
+                >
+                  <FaMagnifyingGlass size={25} color="#333" />
                 </Button>
                 <Modal
                   size="sm"
-                  show={ showModalFollowing }
-                  onHide={ () => setShowModalFollowing(false) }
+                  show={showModalFollowing}
+                  onHide={() => setShowModalFollowing(false)}
                   aria-labelledby="example-modal-sizes-title-sm "
                   centered
                 >
@@ -330,38 +331,34 @@ const Profile = () => {
                     </Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    { Array.isArray(following) &&
+                    {Array.isArray(following) &&
                       following.map((follow, index) => (
                         <div
                           className="d-flex align-items-center gap-3 mb-2"
-                          key={ `${follow.id}_${index}` }
+                          key={`${follow.id}_${index}`}
                         >
-                          { follow.userImage ? (
+                          {follow.userImage ? (
                             <Image>
                               <img
                                 className="userImg-follower"
-                                src={ `../upload/${follow.userImage}` }
-                                alt={ user.fullname }
+                                src={`../upload/${follow.userImage}`}
+                                alt={user.fullname}
                               />
                             </Image>
                           ) : (
-                            
-                            <img src={ followerUser } alt={ user.username } />
-                              
-                          
-                          ) }
+                            <img src={followerUser} alt={user.username} />
+                          )}
                           <Link
-                            onClick={ () => setShowModalFollowing(false) }
+                            onClick={() => setShowModalFollowing(false)}
                             className="text-decoration-none text-dark"
-                            to={ `/profile/${follow.username}` }
+                            to={`/profile/${follow.username}`}
                           >
-                            { follow.fullname }
+                            {follow.fullname}
                           </Link>
                         </div>
-                      )) }
+                      ))}
                   </Modal.Body>
                 </Modal>
-                
               </PostLink>
             </div>
 
