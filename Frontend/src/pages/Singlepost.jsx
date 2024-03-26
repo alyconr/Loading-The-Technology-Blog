@@ -41,6 +41,7 @@ const Singlepost = () => {
           `http://localhost:9000/api/v1/posts/${postId}`
         );
         setPost(res.data.post);
+        console.log(res.data.post)
 
         const userRes = await axios.get(
           `http://localhost:9000/api/v1/user/${res.data.post.username}`,
@@ -84,6 +85,8 @@ const Singlepost = () => {
       __html: dompurify.sanitize(html), // this will sanitize the html code to prevent XSS attacks
     };
   };
+
+  
 
   return (
     <Wrapper>
@@ -156,7 +159,7 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
-          {post.fullname !== currentUser?.user?.fullname && <button className="message " title="Bookmark">
+          {post.fullname !== currentUser?.user?.fullname &&  <button className="message " title="Bookmark">
             <MdBookmarkAdd className="bookmark" size={ 35 } />
           </button> }
         </FooterAction>
