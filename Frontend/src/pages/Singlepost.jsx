@@ -17,6 +17,7 @@ import Comments from "../components/comments";
 import { FaCommentDots } from "react-icons/fa";
 import { Offcanvas } from "react-bootstrap";
 import { MdBookmarkAdd } from "react-icons/md";
+import Bookmarks from "./Bookmarks";
 const Singlepost = () => {
   const [post, setPost] = useState({});
   const [userImage, setUserImage] = useState("");
@@ -24,7 +25,8 @@ const Singlepost = () => {
   const { currentUser } = useContext(AuthContext);
 
   const [show, setShow] = useState(false);
-  const [bookmark, setBookmark] = useState(false);
+  const [showBookmark, setShowBookmark] = useState(false);
+  const [bookmarks, setBookmarks] = useState([]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -42,7 +44,7 @@ const Singlepost = () => {
           `http://localhost:9000/api/v1/posts/${postId}`
         );
         setPost(res.data.post);
-        console.log(res.data.post)
+        console.log(res.data.post);
 
         const userRes = await axios.get(
           `http://localhost:9000/api/v1/user/${res.data.post.username}`,
@@ -87,11 +89,10 @@ const Singlepost = () => {
     };
   };
 
-
   const handleBookmark = async () => {
     try {
       await axios.post(
-        'http://localhost:9000/api/v1/bookmarks',
+        "http://localhost:9000/api/v1/bookmarks",
         {
           usersId: currentUser?.user?.id,
           postsId: postId,
@@ -101,7 +102,7 @@ const Singlepost = () => {
           credentials: "include",
         }
       );
-      setBookmark(true);
+      setShowBookmark(true);
       toast.info("Post bookmarked successfully", {
         position: "bottom-right",
         autoClose: 2500,
@@ -112,22 +113,48 @@ const Singlepost = () => {
         progress: undefined,
         theme: "dark",
       });
-      
     } catch (err) {
       console.log(err);
     }
   };
 
+  useEffect(() => {
+    const getBookmarks = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:9000/api/v1/bookmarks/${currentUser?.user?.id}`
+        );
+        setBookmarks(res.data.bookmarks);
+        console.log(res.data.bookmarks);
+
+        if (res.data.bookmarks) {
+          setBookmarks(res.data.bookmarks);
+          console.log(res.data.bookmarks);
+
+          const bookmarksExist = Object.keys(res.data.bookmarks).length > 0;
+          setShowBookmark(bookmarksExist);
+        } else {
+          setShowBookmark(false);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getBookmarks();
+  }, [currentUser?.user?.id]);
+
   const deleteBookmark = async () => {
     try {
-      await axios.delete(`http://localhost:9000/api/v1/bookmarks/${currentUser?.user?.id}`,
+      await axios.delete(
+        `http://localhost:9000/api/v1/bookmarks/${currentUser?.user?.id}`,
         {
           data: {
             usersId: currentUser?.user?.id,
             postsId: postId,
-        } },
-        );
-      setBookmark(false);
+          },
+        }
+      );
+      setShowBookmark(false);
       toast.info("Post unbookmarked successfully", {
         position: "bottom-right",
         autoClose: 2500,
@@ -142,9 +169,6 @@ const Singlepost = () => {
       console.log(err);
     }
   };
-  
-
-  
 
   return (
     <Wrapper>
@@ -166,7 +190,7 @@ const Singlepost = () => {
 
             <p>Posted {moment(post.date).fromNow()}</p>
           </div>
-          {currentUserUsername && currentUserUsername === post.username &&  (
+          {currentUserUsername && currentUserUsername === post.username && (
             <div className="Actions">
               <Link to={`/write?edit=${postId}`} state={post}>
                 <button title="Edit" className="message">
@@ -195,12 +219,24 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
-          {post.fullname !== currentUser?.user?.fullname &&  !bookmark ? <button onClick={handleBookmark} className="message " title="Bookmark">
-            <MdBookmarkAdd className="bookmark" size={ 35 } />
-          </button> : post.fullname !== currentUser?.user?.fullname &&  bookmark ? <button onClick={deleteBookmark} className="message " title="Bookmark"> 
-            { " " }
-            <MdBookmarkAdd className="bookmark" size={ 35 } color="#0D0D0E" />
-          </button> : null }
+          {post.fullname !== currentUser?.user?.fullname && !showBookmark ? (
+            <button
+              onClick={handleBookmark}
+              className="message "
+              title="Bookmark"
+            >
+              <MdBookmarkAdd className="bookmark" size={35} />
+            </button>
+          ) : post.fullname !== currentUser?.user?.fullname && showBookmark ? (
+            <button
+              onClick={deleteBookmark}
+              className="message "
+              title="Bookmark"
+            >
+              {" "}
+              <MdBookmarkAdd className="bookmark" size={35} color="#0D0D0E" />
+            </button>
+          ) : null}
         </div>
         <h1>{post.title}</h1>
         <h3>{post.description}</h3>
@@ -219,12 +255,20 @@ const Singlepost = () => {
             {" "}
             <FaCommentDots className="comment" size={30} />
           </button>
-          {post.fullname !== currentUser?.user?.fullname &&  !bookmark ? <button className="message " title="Bookmark">
-            <MdBookmarkAdd className="bookmark" size={ 35 } />
-          </button> : <button onClick={deleteBookmark} className="message " title="Bookmark"> 
-            { " " }
-            <MdBookmarkAdd className="bookmark" size={ 35 } color="#0D0D0E" />
-          </button> }
+          {post.fullname !== currentUser?.user?.fullname && !showBookmark ? (
+            <button className="message " title="Bookmark">
+              <MdBookmarkAdd className="bookmark" size={35} />
+            </button>
+          ) : (
+            <button
+              onClick={deleteBookmark}
+              className="message "
+              title="Bookmark"
+            >
+              {" "}
+              <MdBookmarkAdd className="bookmark" size={35} color="#0D0D0E" />
+            </button>
+          )}
         </FooterAction>
         <Offcanvas show={show} onHide={handleClose} className="w-50 p-1 ">
           <Offcanvas.Header closeButton>
