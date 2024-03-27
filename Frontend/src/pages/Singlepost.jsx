@@ -125,7 +125,7 @@ const Singlepost = () => {
           `http://localhost:9000/api/v1/bookmarks/${currentUser?.user?.id}`
         );
         setBookmarks(res.data.bookmarks);
-        console.log(res.data.bookmarks);
+        
 
         if (res.data.bookmarks) {
           setBookmarks(res.data.bookmarks);
@@ -256,10 +256,14 @@ const Singlepost = () => {
             <FaCommentDots className="comment" size={30} />
           </button>
           {post.fullname !== currentUser?.user?.fullname && !showBookmark ? (
-            <button className="message " title="Bookmark">
+            <button
+              onClick={handleBookmark}
+              className="message "
+              title="Bookmark"
+            >
               <MdBookmarkAdd className="bookmark" size={35} />
             </button>
-          ) : (
+          ) : post.fullname !== currentUser?.user?.fullname && showBookmark ? (
             <button
               onClick={deleteBookmark}
               className="message "
@@ -268,7 +272,7 @@ const Singlepost = () => {
               {" "}
               <MdBookmarkAdd className="bookmark" size={35} color="#0D0D0E" />
             </button>
-          )}
+          ) : null}
         </FooterAction>
         <Offcanvas show={show} onHide={handleClose} className="w-50 p-1 ">
           <Offcanvas.Header closeButton>
