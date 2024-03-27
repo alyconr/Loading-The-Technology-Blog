@@ -320,10 +320,10 @@ const Navbar = () => {
                   <Modal.Header className="border-0" closeButton></Modal.Header>
                   <Modal.Body>
                     <ProfileContainer>
-                      <img
-                        src={`../upload/${currentUser.user.image}`}
-                        alt={currentUser.user.username}
-                      />
+                      { currentUser?.user.image && <img
+                        src={ `../upload/${currentUser.user.image}` }
+                        alt={ currentUser.user.username }
+                      /> }
                       <h1>{currentUser.user.fullname}</h1>
                       <h3>Email: {currentUser.user.email}</h3>
                     </ProfileContainer>
