@@ -11,6 +11,7 @@ import axios from "axios";
 import { Button, Modal } from "react-bootstrap";
 import users from "../assets/users.png";
 import user from "../assets/user100.png";
+import { PiFileMagnifyingGlass } from "react-icons/pi";
 
 const Navbar = () => {
   const { currentUser, logout } = useContext(AuthContext);
@@ -138,6 +139,13 @@ const Navbar = () => {
                     onClick={closeMobileMenu}
                   >
                     <CgProfile size={20} /> Profile
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    as={Link}
+                    className="menu-item text-decoration-none hover:text-red-500"
+                    to={`/profile/${currentUser?.user.username}/bookmarks`}
+                  >
+                    <PiFileMagnifyingGlass /> Reading List
                   </Dropdown.Item>
 
                   <Dropdown.Item
@@ -274,6 +282,13 @@ const Navbar = () => {
                     >
                       <CgProfile size={20} /> Profile
                     </Dropdown.Item>
+                    <Dropdown.Item
+                      as={Link}
+                      className="menu-item text-decoration-none hover:text-red-500"
+                      to={`/profile/${currentUser?.user.username}/bookmarks`}
+                    >
+                      <PiFileMagnifyingGlass /> Reading List
+                    </Dropdown.Item>
 
                     <Dropdown.Item
                       as={Link}
@@ -369,8 +384,6 @@ const NavBar = styled.div`
       rgba(252, 176, 69, 1) 100%
     );
   }
-
-  
 `;
 
 const Logo = styled.div`
@@ -398,8 +411,6 @@ const Menu = styled.div`
   @media (max-width: 820px) {
     display: none; /* Hide the regular menu on small screens */
   }
-
- 
 
   .menu-item {
     font-size: 18px;
@@ -460,8 +471,6 @@ const MobileMenu = styled.div`
     background-color: #342e2e;
     gap: 10px;
   }
-
-  
 
   .menu-item {
     font-size: 18px;
