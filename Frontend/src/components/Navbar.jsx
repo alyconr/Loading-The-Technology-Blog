@@ -139,18 +139,19 @@ const Navbar = () => {
                   >
                     <CgProfile size={20} /> Profile
                   </Dropdown.Item>
-                  <Dropdown.Item
-                    className="menu-item text-decoration-none"
-                    onClick={handleLogout}
-                  >
-                    <RiLogoutCircleRLine /> Logout
-                  </Dropdown.Item>
+
                   <Dropdown.Item
                     as={Link}
                     className="menu-item text-decoration-none"
                     to={`/settings/${currentUser?.user.username}`}
                   >
                     <IoSettingsOutline /> Settings
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className="menu-item text-decoration-none"
+                    onClick={handleLogout}
+                  >
+                    <RiLogoutCircleRLine /> Logout
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -275,17 +276,17 @@ const Navbar = () => {
                     </Dropdown.Item>
 
                     <Dropdown.Item
-                      className="menu-item text-decoration-none"
-                      onClick={logout}
-                    >
-                      <RiLogoutCircleRLine /> Logout
-                    </Dropdown.Item>
-                    <Dropdown.Item
                       as={Link}
                       className="menu-item text-decoration-none"
                       to={`/settings/${currentUser?.user.username}`}
                     >
                       <IoSettingsOutline /> Settings
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className="menu-item text-decoration-none"
+                      onClick={logout}
+                    >
+                      <RiLogoutCircleRLine /> Logout
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
@@ -320,10 +321,12 @@ const Navbar = () => {
                   <Modal.Header className="border-0" closeButton></Modal.Header>
                   <Modal.Body>
                     <ProfileContainer>
-                      { currentUser?.user.image && <img
-                        src={ `../upload/${currentUser.user.image}` }
-                        alt={ currentUser.user.username }
-                      /> }
+                      {currentUser?.user.image && (
+                        <img
+                          src={`../upload/${currentUser.user.image}`}
+                          alt={currentUser.user.username}
+                        />
+                      )}
                       <h1>{currentUser.user.fullname}</h1>
                       <h3>Email: {currentUser.user.email}</h3>
                     </ProfileContainer>
