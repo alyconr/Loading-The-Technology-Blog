@@ -369,6 +369,8 @@ const NavBar = styled.div`
       rgba(252, 176, 69, 1) 100%
     );
   }
+
+  
 `;
 
 const Logo = styled.div`
@@ -396,6 +398,8 @@ const Menu = styled.div`
   @media (max-width: 820px) {
     display: none; /* Hide the regular menu on small screens */
   }
+
+ 
 
   .menu-item {
     font-size: 18px;
@@ -456,6 +460,8 @@ const MobileMenu = styled.div`
     background-color: #342e2e;
     gap: 10px;
   }
+
+  
 
   .menu-item {
     font-size: 18px;
