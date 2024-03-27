@@ -259,7 +259,7 @@ const Profile = () => {
                   <MdOutlinePostAdd size={30} color="#6A072D" /> {posts?.length}{" "}
                   Posts <FaMagnifyingGlass />
                 </div>
-                <div className="d-block d-md-flex gap-3">
+                <div className="d-flex flex-row align-items-center gap-3 me-3 ">
                   <BsBookmarkHeartFill size={30} color="#6A072D" />
                   Bookmarks
                   <FaMagnifyingGlass />
