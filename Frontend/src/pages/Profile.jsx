@@ -16,6 +16,7 @@ import { SlUserFollowing } from "react-icons/sl";
 import { SlUserUnfollow } from "react-icons/sl";
 import { MdOutlineGroups2 } from "react-icons/md";
 import followerUser from "../assets/follower.png";
+import { BsBookmarkHeartFill } from "react-icons/bs";
 
 // Import Modal and Button from react-bootstrap
 
@@ -201,6 +202,7 @@ const Profile = () => {
         );
 
         setFollowing(res.data);
+        console.log(res.data);
       } catch (error) {
         console.error(error);
       }
@@ -249,115 +251,41 @@ const Profile = () => {
             <hr />
 
             <div className="d-flex flex-column">
-              <PostLink to={`/profile/${user.username}/posts`}>
-                <MdOutlinePostAdd size={30} color="#6A072D" /> {posts?.length}{" "}
-                Posts <FaMagnifyingGlass />
+              <PostLink
+                className="d-flex flex-row justify-content-between "
+                to={`/profile/${user.username}/posts`}
+              >
+                <div>
+                  <MdOutlinePostAdd size={30} color="#6A072D" /> {posts?.length}{" "}
+                  Posts <FaMagnifyingGlass />
+                </div>
+                <div className="d-block d-md-flex gap-3">
+                  <BsBookmarkHeartFill size={30} color="#6A072D" />
+                  Bookmarks
+                  <FaMagnifyingGlass />
+                </div>
               </PostLink>
-              <PostLink className="d-flex align-items-center gap-2">
-                <MdOutlineGroups2 size={30} color="#6A072D" />{" "}
-                <>{followers?.length > 0 ? followers?.length : 0} Followers</>
-                <Button
-                  onClick={() => setShowModalFollower(true)}
-                  className="btn-followers border-0 bg-transparent"
-                >
-                  <FaMagnifyingGlass size={25} color="#333" />
-                </Button>
-                <Modal
-                  size="sm"
-                  show={showModalFollower}
-                  onHide={() => setShowModalFollower(false)}
-                  aria-labelledby="example-modal-sizes-title-sm "
-                  centered
-                >
-                  <Modal.Header closeButton>
-                    <Modal.Title
-                      className="text-dark bold fw-bold "
-                      id="example-modal-sizes-title-sm"
-                    >
-                      Followers
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    {Array.isArray(followers) &&
-                      followers.map((follower, index) => (
-                        <div
-                          className="d-flex align-items-center gap-3 mb-2"
-                          key={`${follower.id}_${index}`}
-                        >
-                          {follower.userImage ? (
-                            <Image>
-                              <img
-                                className="userImg-follower"
-                                src={`../upload/${follower.userImage}`}
-                                alt={user.fullname}
-                              />
-                            </Image>
-                          ) : (
-                            <img src={followerUser} alt={user.username} />
-                          )}
-                          <Link
-                            onClick={() => setShowModalFollower(false)}
-                            className="text-decoration-none text-dark"
-                            to={`/profile/${follower.username}`}
-                          >
-                            {follower.fullname}
-                          </Link>
-                        </div>
-                      ))}
-                  </Modal.Body>
-                </Modal>
-                <SlUserFollowing className="ms-2" size={25} color="#6A072D" />{" "}
-                <>{following?.length > 0 ? following?.length : 0} Followings</>
-                <Button
-                  onClick={() => setShowModalFollowing(true)}
-                  className="btn-followers border-0 bg-transparent"
-                >
-                  <FaMagnifyingGlass size={25} color="#333" />
-                </Button>
-                <Modal
-                  size="sm"
-                  show={showModalFollowing}
-                  onHide={() => setShowModalFollowing(false)}
-                  aria-labelledby="example-modal-sizes-title-sm "
-                  centered
-                >
-                  <Modal.Header closeButton>
-                    <Modal.Title
-                      className="text-dark bold fw-bold "
-                      id="example-modal-sizes-title-sm"
-                    >
-                      Followings
-                    </Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    {Array.isArray(following) &&
-                      following.map((follow, index) => (
-                        <div
-                          className="d-flex align-items-center gap-3 mb-2"
-                          key={`${follow.id}_${index}`}
-                        >
-                          {follow.userImage ? (
-                            <Image>
-                              <img
-                                className="userImg-follower"
-                                src={`../upload/${follow.userImage}`}
-                                alt={user.fullname}
-                              />
-                            </Image>
-                          ) : (
-                            <img src={followerUser} alt={user.username} />
-                          )}
-                          <Link
-                            onClick={() => setShowModalFollowing(false)}
-                            className="text-decoration-none text-dark"
-                            to={`/profile/${follow.username}`}
-                          >
-                            {follow.fullname}
-                          </Link>
-                        </div>
-                      ))}
-                  </Modal.Body>
-                </Modal>
+              <PostLink className="d-flex flex-column">
+                <div>
+                  <MdOutlineGroups2 size={30} color="#6A072D" />{" "}
+                  <>{followers?.length > 0 ? followers?.length : 0} Followers</>
+                  <Button
+                    onClick={() => setShowModalFollower(true)}
+                    className="btn-followers border-0 bg-transparent"
+                  >
+                    <FaMagnifyingGlass size={25} color="#333" />
+                  </Button>
+                  <SlUserFollowing size={25} color="#6A072D" />{" "}
+                  <>
+                    {following?.length > 0 ? following?.length : 0} Followings
+                  </>
+                  <Button
+                    onClick={() => setShowModalFollowing(true)}
+                    className="btn-followers border-0 bg-transparent"
+                  >
+                    <FaMagnifyingGlass size={25} color="#333" />
+                  </Button>
+                </div>
               </PostLink>
             </div>
 
@@ -405,6 +333,94 @@ const Profile = () => {
                 </Button>
               ) : null}
             </div>
+            <Modal
+              size="sm"
+              show={showModalFollowing}
+              onHide={() => setShowModalFollowing(false)}
+              aria-labelledby="example-modal-sizes-title-sm "
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title
+                  className="text-dark bold fw-bold "
+                  id="example-modal-sizes-title-sm"
+                >
+                  Followings
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {Array.isArray(following) &&
+                  following.map((follow, index) => (
+                    <div
+                      className="d-flex align-items-center gap-3 mb-2"
+                      key={`${follow.id}_${index}`}
+                    >
+                      {follow.userImage ? (
+                        <Image>
+                          <img
+                            className="userImg-follower"
+                            src={`../upload/${follow.userImage}`}
+                            alt={user.fullname}
+                          />
+                        </Image>
+                      ) : (
+                        <img src={followerUser} alt={user.username} />
+                      )}
+                      <Link
+                        onClick={() => setShowModalFollowing(false)}
+                        className="text-decoration-none text-dark"
+                        to={`/profile/${follow.username}`}
+                      >
+                        {follow.fullname}
+                      </Link>
+                    </div>
+                  ))}
+              </Modal.Body>
+            </Modal>
+            <Modal
+              size="sm"
+              show={showModalFollower}
+              onHide={() => setShowModalFollower(false)}
+              aria-labelledby="example-modal-sizes-title-sm "
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title
+                  className="text-dark bold fw-bold "
+                  id="example-modal-sizes-title-sm"
+                >
+                  Followers
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                {Array.isArray(followers) &&
+                  followers.map((follower, index) => (
+                    <div
+                      className="d-flex align-items-center gap-3 mb-2"
+                      key={`${follower.id}_${index}`}
+                    >
+                      {follower.userImage ? (
+                        <Image>
+                          <img
+                            className="userImg-follower"
+                            src={`../upload/${follower.userImage}`}
+                            alt={user.fullname}
+                          />
+                        </Image>
+                      ) : (
+                        <img src={followerUser} alt={user.username} />
+                      )}
+                      <Link
+                        onClick={() => setShowModalFollower(false)}
+                        className="text-decoration-none text-dark"
+                        to={`/profile/${follower.username}`}
+                      >
+                        {follower.fullname}
+                      </Link>
+                    </div>
+                  ))}
+              </Modal.Body>
+            </Modal>
           </ProfileContainer>
         ) : (
           <EditProfile>
@@ -524,9 +540,9 @@ const Container = styled.div`
   }
 `;
 const ProfileContainer = styled.div`
-  padding: 5rem 5rem;
+  padding: 5rem 1rem;
   border: 1px solid #ebe3d5;
-  margin: 2rem auto;
+  margin: 2rem 2rem;
   border-radius: 10px;
   box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
 
@@ -587,6 +603,10 @@ const ProfileContainer = styled.div`
     margin: 0 auto;
     border-radius: 50%;
     object-fit: cover;
+  }
+
+  @media (min-width: 368px) {
+    margin: 2rem auto;
   }
 `;
 const EditProfile = styled.div`
@@ -710,6 +730,18 @@ const PostLink = styled(Link)`
   color: #333;
   cursor: pointer;
   font-size: 1.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 370px) {
+    font-size: 0.6rem;
+  }
 `;
 
 const Image = styled.div`
