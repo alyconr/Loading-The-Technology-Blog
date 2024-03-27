@@ -82,45 +82,40 @@ const Navbar = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="bg-light ">
-              <Dropdown.Item>
-                <MenuItem
-                  className=" menu-item   text-decoration-none "
-                  to="/?category=Web-Development"
-                >
-                  Web Development
-                </MenuItem>
+              <Dropdown.Item
+                className=" menu-item   text-decoration-none "
+                as={Link}
+                to="/?category=Web-Development"
+              >
+                Web Development
               </Dropdown.Item>
-              <Dropdown.Item>
-                <MenuItem
-                  className="  menu-item text-decoration-none "
-                  to="/?category=Cloud-Computing"
-                >
-                  Cloud Computing
-                </MenuItem>
+              <Dropdown.Item
+                className="  menu-item text-decoration-none "
+                as={Link}
+                to="/?category=Cloud-Computing"
+              >
+                Cloud Computing
               </Dropdown.Item>
-              <Dropdown.Item>
-                <MenuItem
-                  className="  menu-item text-decoration-none "
-                  to="/?category=DevOps"
-                >
-                  DevOps
-                </MenuItem>
+              <Dropdown.Item
+                as={Link}
+                className="  menu-item text-decoration-none "
+                to="/?category=DevOps"
+              >
+                DevOps
               </Dropdown.Item>
-              <Dropdown.Item>
-                <MenuItem
-                  className="  menu-item text-decoration-none "
-                  to="/?category=Security"
-                >
-                  Security
-                </MenuItem>
+              <Dropdown.Item
+                as={Link}
+                className="  menu-item text-decoration-none "
+                to="/?category=Security"
+              >
+                Security
               </Dropdown.Item>
-              <Dropdown.Item>
-                <MenuItem
-                  className="  menu-item text-decoration-none "
-                  to="/?category=Linux"
-                >
-                  Linux
-                </MenuItem>
+              <Dropdown.Item
+                as={Link}
+                className="  menu-item text-decoration-none "
+                to="/?category=Linux"
+              >
+                Linux
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -136,15 +131,14 @@ const Navbar = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Profile to={`/profile/${currentUser?.user.username}`}>
-                    <Dropdown.Item
-                      className="menu-item text-decoration-none"
-                      href="#/action-1"
-                      onClick={closeMobileMenu}
-                    >
-                      <CgProfile size={20} /> Profile
-                    </Dropdown.Item>
-                  </Profile>
+                  <Dropdown.Item
+                    as={Link}
+                    className="menu-item text-decoration-none"
+                    to={`/profile/${currentUser?.user.username}`}
+                    onClick={closeMobileMenu}
+                  >
+                    <CgProfile size={20} /> Profile
+                  </Dropdown.Item>
                   <Dropdown.Item
                     className="menu-item text-decoration-none"
                     onClick={handleLogout}
@@ -152,15 +146,11 @@ const Navbar = () => {
                     <RiLogoutCircleRLine /> Logout
                   </Dropdown.Item>
                   <Dropdown.Item
+                    as={Link}
                     className="menu-item text-decoration-none"
-                    href="#/action-3"
+                    to={`/settings/${currentUser?.user.username}`}
                   >
-                    <Link
-                      to={`/settings/${currentUser?.user.username}`}
-                      className="menu-item text-decoration-none"
-                    >
-                      <IoSettingsOutline /> Settings
-                    </Link>
+                    <IoSettingsOutline /> Settings
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -202,7 +192,7 @@ const Navbar = () => {
                         alt={currentUser.user.username}
                       />
                     ) : (
-                         <img src={user} alt="user" />
+                      <img src={user} alt="user" />
                     )}
                     <h1>{currentUser.user.fullname}</h1>
                     <h3>Email: {currentUser.user.email}</h3>
@@ -226,45 +216,40 @@ const Navbar = () => {
               </Dropdown.Toggle>
 
               <Dropdown.Menu className="bg-light">
-                <Dropdown.Item>
-                  <MenuItem
-                    className="menu-item text-decoration-none"
-                    to="/?category=Web-Development"
-                  >
-                    Web Development
-                  </MenuItem>
+                <Dropdown.Item
+                  as={Link}
+                  className="menu-item text-decoration-none"
+                  to="/?category=Web-Development"
+                >
+                  Web Development
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <MenuItem
-                    className="menu-item text-decoration-none"
-                    to="/?category=Cloud-Computing"
-                  >
-                    Cloud Computing
-                  </MenuItem>
+                <Dropdown.Item
+                  as={Link}
+                  className="menu-item text-decoration-none"
+                  to="/?category=Cloud-Computing"
+                >
+                  Cloud Computing
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <MenuItem
-                    className="menu-item text-decoration-none"
-                    to="/?category=DevOps"
-                  >
-                    DevOps
-                  </MenuItem>
+                <Dropdown.Item
+                  as={Link}
+                  className="menu-item text-decoration-none"
+                  to="/?category=DevOps"
+                >
+                  DevOps
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <MenuItem
-                    className="menu-item text-decoration-none"
-                    to="/?category=Security"
-                  >
-                    Security
-                  </MenuItem>
+                <Dropdown.Item
+                  as={Link}
+                  className="menu-item text-decoration-none"
+                  to="/?category=Security"
+                >
+                  <MenuItem>Security</MenuItem>
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <MenuItem
-                    className="menu-item text-decoration-none"
-                    to="/?category=Linux"
-                  >
-                    Linux
-                  </MenuItem>
+                <Dropdown.Item
+                  as={Link}
+                  className="menu-item text-decoration-none"
+                  to="/?category=Linux"
+                >
+                  Linux
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -280,15 +265,14 @@ const Navbar = () => {
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
-                    <Profile to={`/profile/${currentUser?.user.username}`}>
-                      <Dropdown.Item
-                        href="#/action-1"
-                        onClick={closeMobileMenu}
-                        className="menu-item text-decoration-none"
-                      >
-                        <CgProfile size={20} /> Profile
-                      </Dropdown.Item>
-                    </Profile>
+                    <Dropdown.Item
+                      as={Link}
+                      to={`/profile/${currentUser?.user.username}`}
+                      onClick={closeMobileMenu}
+                      className="menu-item text-decoration-none"
+                    >
+                      <CgProfile size={20} /> Profile
+                    </Dropdown.Item>
 
                     <Dropdown.Item
                       className="menu-item text-decoration-none"
@@ -297,8 +281,9 @@ const Navbar = () => {
                       <RiLogoutCircleRLine /> Logout
                     </Dropdown.Item>
                     <Dropdown.Item
+                      as={Link}
                       className="menu-item text-decoration-none"
-                      href="#/action-3"
+                      to={`/settings/${currentUser?.user.username}`}
                     >
                       <IoSettingsOutline /> Settings
                     </Dropdown.Item>
