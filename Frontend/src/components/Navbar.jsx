@@ -242,7 +242,7 @@ const Navbar = () => {
                   className="menu-item text-decoration-none"
                   to="/?category=Security"
                 >
-                  <MenuItem>Security</MenuItem>
+                  Security
                 </Dropdown.Item>
                 <Dropdown.Item
                   as={Link}
