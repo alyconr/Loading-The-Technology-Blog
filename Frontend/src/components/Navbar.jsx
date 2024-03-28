@@ -45,7 +45,7 @@ const Navbar = () => {
       const res = await axios.get(`http://localhost:9000/api/v1/draftposts`);
       if (res.data.posts.length > 0) {
         setDraftPost(res.data.posts[0]);
-        const newDraftId = res.data.posts[0].id;
+        const newDraftId = res.data.posts[0].draft_id;
         setDraftId(newDraftId);
 
         //Save the new draftId to localStorage
