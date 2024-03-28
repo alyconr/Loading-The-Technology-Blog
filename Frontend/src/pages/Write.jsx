@@ -18,40 +18,11 @@ const Write = () => {
   const [cont, setCont] = useState(location?.state?.content || "");
   const [file, setFile] = useState(null);
   const [cat, setCat] = useState(location?.state?.category || "");
-  const [draftSaved, setDraftSaved] = useState(false);
   const [draftId, setDraftId] = useState(draftParamId);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedDraftId = localStorage.getItem("draftId");
-        console.log(storedDraftId);
-
-        const response = await axios.get(
-          `http://localhost:9000/api/v1/draftposts/${storedDraftId}`
-        );
-        const draftData = response.data.post;
-        console.log(draftData);
-
-        if (draftData) {
-          setTitle(draftData.title || "");
-          setDesc(draftData.description || "");
-          setCont(draftData.content || "");
-          setCat(draftData.category || "");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    // Only fetch draft data when the component mounts
-
-    fetchData();
-  }, [draftId]);
-
-  useEffect(() => {
     const saveDraftAutomatically = async () => {
-      if (title && desc && cont) {
+      if (title && desc && cont && cat) {
         try {
           const endpoint = draftId
             ? `http://localhost:9000/api/v1/draftposts/${draftId}` // Use the existing draftId for updates
@@ -65,6 +36,7 @@ const Write = () => {
               description: desc,
               content: cont,
               image: file ? file.name : "",
+              date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
               category: cat,
             },
             withCredentials: true,
@@ -72,7 +44,7 @@ const Write = () => {
 
           const newDraftId = response.data.post || draftId;
           setDraftId(newDraftId);
-          setDraftSaved(true);
+
           toast.info("Draft saved successfully", {
             position: "bottom-center",
             autoClose: 2500,
@@ -98,7 +70,33 @@ const Write = () => {
     return () => {
       debounced.cancel();
     };
-  }, [title, desc, cont]);
+  }, [title, desc, cont, cat]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:9000/api/v1/draftposts"
+        );
+        const draftData = response.data.posts || [];
+        console.log(draftData);
+
+        if (draftData) {
+          setTitle(draftData[0]?.title || "");
+          setDesc(draftData[0]?.description || "");
+          setCont(draftData[0]?.content || "");
+          setCat(draftData[0]?.category || "");
+          setFile(draftData[0]?.image || null);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    // Only fetch draft data when the component mounts
+
+    fetchData();
+  }, [draftId]);
 
   const handleDeleteDraftPost = async () => {
     try {
@@ -108,7 +106,7 @@ const Write = () => {
       // Set the state to null or an appropriate value
       setDraftId(null);
 
-      await axios.delete(`http://localhost:9000/api/v1/draftposts/${draftId}`, {
+      await axios.delete(`http://localhost:9000/api/v1/draftposts`, {
         withCredentials: true,
       });
       setTitle("");
@@ -130,9 +128,7 @@ const Write = () => {
     }
   };
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-
+  const handlePublish = async () => {
     if (!title || !desc || !cont || !cat || !file) {
       toast.error("Please fill all the fields");
       return;
@@ -160,32 +156,34 @@ const Write = () => {
 
       const imgUrl = res.data;
 
-      location.state
-        ? await axios.put(
-            `http://localhost:9000/api/v1/posts/${location.state.id}`,
-            {
-              title,
-              description: desc,
-              content: cont,
-              category: cat,
-              image: file ? imgUrl : "",
-            },
-            {
-              withCredentials: true,
-            }
-          )
-        : await axios.post(
-            "http://localhost:9000/api/v1/posts",
-            {
-              title,
-              description: desc,
-              content: cont,
-              image: file.name ? imgUrl : "",
-              date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
-              category: cat,
-            },
-            { withCredentials: true }
-          );
+      if (location.state && location.state.id) {
+        await axios.put(
+          `http://localhost:9000/api/v1/posts/${location.state.id}`,
+          {
+            title,
+            description: desc,
+            content: cont,
+            category: cat,
+            image: file ? imgUrl : "",
+          },
+          {
+            withCredentials: true,
+          }
+        );
+      } else {
+        await axios.post(
+          "http://localhost:9000/api/v1/posts",
+          {
+            title,
+            description: desc,
+            content: cont,
+            image: file.name ? imgUrl : "",
+            date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+            category: cat,
+          },
+          { withCredentials: true }
+        );
+      }
 
       toast.success("Post published successfully", {
         position: "bottom-right",
@@ -198,10 +196,16 @@ const Write = () => {
         theme: "dark",
       });
       navigate("/");
+      window.location.reload();
     } catch (err) {
       console.log(err);
       toast.error("Error uploading image or publishing post");
     }
+  };
+
+  const handlePublishAndDeleteDraft = async () => {
+    await handlePublish();
+    await handleDeleteDraftPost();
   };
 
   return (
@@ -282,8 +286,7 @@ const Write = () => {
           <h5>{file ? `Uploaded: ${file.name}` : ""}</h5>
           {file ? (
             <div className="actions">
-              <button>Save Draft</button>
-              <button onClick={handleClick}>Publish</button>
+              <button onClick={handlePublishAndDeleteDraft}>Publish</button>
             </div>
           ) : (
             <p> Please before Publish your post select an image</p>
