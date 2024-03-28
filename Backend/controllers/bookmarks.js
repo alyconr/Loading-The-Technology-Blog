@@ -40,10 +40,25 @@ const createBookmark = async (req, res) => {
 };
 
 const getAllBookmarks = async (req, res) => {
-  const sql =
-    "SELECT bookmarks.*, users.fullname, users.username, posts.title, posts.description, posts.image, users.image AS userImage, posts.content, posts.date, posts.category FROM bookmarks JOIN users ON bookmarks.usersId = users.id JOIN posts ON bookmarks.postsId = posts.id";
+  const sql = `
+  SELECT 
+    posts.id, 
+    posts.title, 
+    posts.description, 
+    posts.image, 
+    author.username AS author_username, 
+    author.fullname AS author_fullname, 
+    posts.uid,
+    bookmarks.usersId AS current_usersId
+  FROM 
+    bookmarks 
+    JOIN posts ON bookmarks.postsId = posts.id 
+    JOIN users ON bookmarks.usersId = users.id 
+    JOIN users AS author ON posts.uid = author.id
 
-  const values = [];
+  WHERE 
+    users.id = ?`;
+  const values = [req.params.id];
 
   pool.query(sql, values, (queryError, results) => {
     if (queryError) {
@@ -75,26 +90,8 @@ const deleteBookmark = async (req, res) => {
   });
 };
 
-const getSingleBookmark = async (req, res) => {
-  const sql =
-    "SELECT bookmarks.id, users.id AS usersId, `fullname`, users.image AS userImage, `postsId` FROM bookmarks JOIN users ON bookmarks.usersId = users.id WHERE bookmarks.usersId = ?";
-  const values = [req.params.id];
-
-  pool.query(sql, values, (queryError, results) => {
-    if (queryError) {
-      console.error("Database query error:", queryError);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ error: "Database query error" });
-    } else {
-      res.status(StatusCodes.OK).json({ bookmarks: results[0] });
-    }
-  });
-};
-
 module.exports = {
   createBookmark,
   getAllBookmarks,
   deleteBookmark,
-  getSingleBookmark,
 };
