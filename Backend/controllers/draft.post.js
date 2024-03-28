@@ -4,8 +4,7 @@ const jwt = require("jsonwebtoken");
 const pool = require("../db/connect");
 
 const getAllDraftPosts = async (req, res) => {
-  const sql =
-    "SELECT * FROM posts_draft";    
+  const sql = "SELECT * FROM posts_draft";
 
   const values = [];
 
@@ -148,9 +147,7 @@ const deleteDraftPost = async (req, res) => {
 
   const sql = "DELETE  FROM posts_draft";
 
-  
-
-  pool.query(sql,  (queryError, results) => {
+  pool.query(sql, (queryError, results) => {
     if (queryError) {
       console.error("Database query error:", queryError);
       res
