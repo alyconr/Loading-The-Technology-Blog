@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const pool = require("../db/connect");
 
 const getAllDraftPosts = async (req, res) => {
-  const sql = "SELECT * FROM posts_draft";
+  const sql =
+    "SELECT * FROM posts_draft";    
 
   const values = [];
 
@@ -95,7 +96,7 @@ const updateDraftPost = async (req, res) => {
   ];
 
   const sql =
-    "UPDATE posts_draft SET `title` = ?, `description` = ?, `content` = ?, `image` = ?, `date` = ?, `userId` = ?, `category` = ? WHERE `id` = ?";
+    "UPDATE posts_draft SET `title` = ?, `description` = ?, `content` = ?, `image` = ?, `date` = ?, `userId` = ?, `category` = ? ";
 
   pool.query(sql, values, (queryError, results) => {
     if (queryError) {
@@ -145,11 +146,11 @@ const deleteDraftPost = async (req, res) => {
       .json({ error: "Unauthorized invalid token" });
   }
 
-  const sql = "DELETE FROM posts_draft WHERE `id` = ?";
+  const sql = "DELETE  FROM posts_draft";
 
-  const values = [req.params.id];
+  
 
-  pool.query(sql, values, (queryError, results) => {
+  pool.query(sql,  (queryError, results) => {
     if (queryError) {
       console.error("Database query error:", queryError);
       res
