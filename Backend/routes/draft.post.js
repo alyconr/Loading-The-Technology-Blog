@@ -9,11 +9,11 @@ const {
   deleteDraftPost,
 } = require("../controllers/draft.post");
 
-router.route("/").get(getAllDraftPosts).post(createDraftPost).delete(deleteDraftPost);
 router
-  .route("/:id")
-  .put(updateDraftPost)
-  .get(getSingleDraftPost)
-  ;
+  .route("/")
+  .get(getAllDraftPosts)
+  .post(createDraftPost)
+  .delete(deleteDraftPost);
+router.route("/:id").put(updateDraftPost).get(getSingleDraftPost);
 
 module.exports = router;
