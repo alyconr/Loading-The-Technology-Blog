@@ -6,7 +6,7 @@
 
 <img src="logo.png" alt="logo" width="400" height="250"   />
 <br/>
-<h3><b>AI CROSS POST BLOG APP WITH COPILOT FEATURE</b>
+<h3><b>AI CROSS POST BLOG APP WITH COPILOT AND RAG FEATURE</b>
 
 </div>
 
@@ -308,6 +308,7 @@ This project was  inspired by [Hashnode](https://hashnode.com/) , [Dev.to](https
 This Project is  GNU GENERAL PUBLIC LICENSE [GNU](./LICENSE) 
 
 <p align="right"><a href="#readme-top">Back to top</a></p>
+
 
 
 
